@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="f8e92a4d-68bc-46d2-b0fa-9727e50598fc" name="Changes" comment="" />
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="KubernetesApiPersistence">{}</component>
+  <component name="KubernetesApiProvider">{
+  &quot;isMigrated&quot;: true
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
+  <component name="ProjectId" id="2yiRDOvFWxykLYJdEDGsbB7aPfB" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;JUnit.EventRepositoryTest.testArchive_Event30Plus.executor&quot;: &quot;Run&quot;,
+    &quot;JUnit.EventServiceTest.shouldGetTodaysEvents.executor&quot;: &quot;Coverage&quot;,
+    &quot;JUnit.EventServiceTest.testArchive_Event30Plus.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;evenements-du-jour&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/paulp/Documents/M1/coursTest/m1-methodo-tests-j3-tp-adrienmaximepaul&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\paulp\Documents\M1\coursTest\m1-methodo-tests-j3-tp-adrienmaximepaul\src\main\java\com\ynov\testing\service" />
+      <recent name="C:\Users\paulp\Documents\M1\coursTest\m1-methodo-tests-j3-tp-adrienmaximepaul\src\main\java\com\ynov\testing\repository" />
+      <recent name="C:\Users\paulp\Documents\M1\coursTest\m1-methodo-tests-j3-tp-adrienmaximepaul\src\main\java\com\ynov\testing\model" />
+    </key>
+  </component>
+  <component name="RunManager" selected="JUnit.EventServiceTest.shouldGetTodaysEvents">
+    <configuration name="EventRepositoryTest.testArchive_Event30Plus" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="testing-methodology" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.ynov.testing.repository.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.ynov.testing.repository" />
+      <option name="MAIN_CLASS_NAME" value="com.ynov.testing.repository.EventRepositoryTest" />
+      <option name="METHOD_NAME" value="testArchive_Event30Plus" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EventServiceTest.shouldGetTodaysEvents" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="testing-methodology" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.ynov.testing.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.ynov.testing.service" />
+      <option name="MAIN_CLASS_NAME" value="com.ynov.testing.service.EventServiceTest" />
+      <option name="METHOD_NAME" value="shouldGetTodaysEvents" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="EventServiceTest.testArchive_Event30Plus" type="JUnit" factoryName="JUnit" temporary="true" nameIsGenerated="true">
+      <module name="testing-methodology" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="com.ynov.testing.service.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <option name="PACKAGE_NAME" value="com.ynov.testing.service" />
+      <option name="MAIN_CLASS_NAME" value="com.ynov.testing.service.EventServiceTest" />
+      <option name="METHOD_NAME" value="testArchive_Event30Plus" />
+      <option name="TEST_OBJECT" value="method" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TestingMethodologyApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <module name="testing-methodology" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.ynov.testing.TestingMethodologyApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="JUnit.EventServiceTest.shouldGetTodaysEvents" />
+        <item itemvalue="JUnit.EventServiceTest.testArchive_Event30Plus" />
+        <item itemvalue="JUnit.EventRepositoryTest.testArchive_Event30Plus" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-jdk-9823dce3aa75-fbdcb00ec9e3-intellij.indexing.shared.core-IU-251.26094.121" />
+        <option value="bundled-js-predefined-d6986cc7102b-b26f3e71634d-JavaScript-IU-251.26094.121" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="f8e92a4d-68bc-46d2-b0fa-9727e50598fc" name="Changes" comment="" />
+      <created>1750315290839</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1750315290839</updated>
+      <workItem from="1750315294684" duration="5506000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/m1_methodo_tests_j3_tp_adrienmaximepaul$EventServiceTest_shouldGetTodaysEvents.ic" NAME="EventServiceTest.shouldGetTodaysEvents Coverage Results" MODIFIED="1750321124672" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">
+      <FILTER>com.ynov.testing.service.*</FILTER>
+    </SUITE>
+  </component>
+</project>

@@ -530,4 +530,28 @@ public class EventServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event not found with ID: 999999999999999");
     }
+
+    @Test
+    void shouldGetTodaysEvents() {
+        try(MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)){
+            mockedStatic.when(LocalDateTime::now).thenReturn(fixedNow);
+
+            Event todayEvent = new Event("Today event", "Event today", fixedNow);
+            todayEvent.setActive(true);
+
+            Event tomorrowEvent = new Event("Tomorrow event", "Event tomorrow", fixedNow.plusDays(1));
+            tomorrowEvent.setActive(true);
+
+            LocalDateTime startOfDay = fixedNow.toLocalDate().atStartOfDay();
+            LocalDateTime endOfDay = fixedNow.toLocalDate().atTime(23, 59, 59);
+
+            when(eventRepository.findByEventDateBetweenAndActiveTrue(startOfDay, endOfDay))
+                .thenReturn(List.of(todayEvent));
+
+            eventService.getTodaysEvents();
+
+            assertFalse(todayEvent.getActive());
+            assertTrue(tomorrowEvent.getActive());
+        }
+    }
 }
