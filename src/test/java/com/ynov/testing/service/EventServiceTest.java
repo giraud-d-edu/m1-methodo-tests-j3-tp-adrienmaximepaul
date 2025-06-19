@@ -127,7 +127,7 @@ public class EventServiceTest {
         assertThat(result.getTeamA()).isEqualTo("Dragons");
         assertThat(result.getTeamB()).isEqualTo("Phœnix");
     }
-    
+
 
     @Test
     void shouldThrowWhenCreateEventNameExists() {
@@ -140,6 +140,7 @@ public class EventServiceTest {
 
     @Test
     void shouldValidateCreateEventFields() {
+
         assertThatThrownBy(() -> eventService.createEvent(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event cannot be null");
@@ -472,4 +473,36 @@ public class EventServiceTest {
 
 
 
+
+    @Test
+    void shouldCancelEventsIfMoreThan24Hours() {
+        try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
+            mockedStatic.when(LocalDateTime::now).thenReturn(fixedNow);
+
+            Event event = new Event("New Event", "New event", fixedNow.minusDays(2));
+
+            when(eventRepository.getReferenceById(event.getId())).thenReturn(event);
+
+            eventService.cancelEvent(event.getId());
+
+            assertTrue(event.isCanceled(), "Event should be canceled");
+        }
+    }
+
+    @Test
+    void shouldCancelEventsIfNoMoreThan24Hours() {
+        try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
+            mockedStatic.when(LocalDateTime::now).thenReturn(fixedNow);
+
+            Event event = new Event("New Event", "New event", fixedNow);
+
+            when(eventRepository.getReferenceById(event.getId())).thenReturn(event);
+
+            IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
+                eventService.cancelEvent(event.getId());
+            });
+
+            assertEquals("Impossible d'annuler un événement à moins de 24h avant sa date.", ex.getMessage());
+        }
+    }
 }

@@ -33,6 +33,8 @@ public class Event {
     @NotNull(message = "Event date is required")
     private LocalDateTime eventDate;
 
+    private boolean canceled = false;
+
     @Column(name = "is_active")
     private Boolean active = true;
 
@@ -65,6 +67,9 @@ public class Event {
     public LocalDateTime getEventDate() { return eventDate; }
     public void setEventDate(LocalDateTime eventDate) { this.eventDate = eventDate; }
 
+    public boolean isCanceled() { return canceled; }
+    public void setCanceled(boolean canceled) { this.canceled = canceled; }
+
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
 
@@ -87,6 +92,7 @@ public class Event {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", eventDate=" + eventDate +
+                ", canceled=" + canceled +
                 ", active=" + active +
                 '}';
     }
