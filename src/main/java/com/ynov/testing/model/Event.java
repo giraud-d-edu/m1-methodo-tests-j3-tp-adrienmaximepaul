@@ -38,10 +38,13 @@ public class Event {
     @Column(name = "is_active")
     private Boolean active = true;
 
-    private String teamA;
-    private String teamB;
-    private List<String> playersTeamA;
-    private List<String> playersTeamB;
+    @ManyToOne
+    @JoinColumn(name = "team_a_id")
+    private Team teamA;
+
+    @ManyToOne
+    @JoinColumn(name = "team_b_id")
+    private Team teamB;
     private String city;
     private String teaser;
 
@@ -73,14 +76,10 @@ public class Event {
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
 
-    public String getTeamA() { return teamA; }
-    public void setTeamA(String teamA) { this.teamA = teamA; }
-    public String getTeamB() { return teamB; }
-    public void setTeamB(String teamB) { this.teamB = teamB; }
-    public List<String> getPlayersTeamA() { return playersTeamA; }
-    public void setPlayersTeamA(List<String> playersTeamA) { this.playersTeamA = playersTeamA; }
-    public List<String> getPlayersTeamB() { return playersTeamB; }
-    public void setPlayersTeamB(List<String> playersTeamB) { this.playersTeamB = playersTeamB; }
+    public Team getTeamA() { return teamA; }
+    public void setTeamA(Team teamA) { this.teamA = teamA; }
+    public Team getTeamB() { return teamB; }
+    public void setTeamB(Team teamB) { this.teamB = teamB; }
     public String getCity() { return city; }
     public void setCity(String city) { this.city = city; }
     public String getTeaser() { return teaser; }

@@ -1,6 +1,8 @@
 package com.ynov.testing.service;
 
 import com.ynov.testing.model.Event;
+import com.ynov.testing.model.Player;
+import com.ynov.testing.model.Team;
 import com.ynov.testing.repository.EventRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -45,10 +47,23 @@ public class EventServiceTest {
         sampleEvent.setDescription("Description");
         sampleEvent.setEventDate(LocalDateTime.of(2025, 1, 1, 12, 0));
         sampleEvent.setActive(true);
-        sampleEvent.setTeamA("Team Alpha");
-        sampleEvent.setTeamB("Team Beta");
-        sampleEvent.setPlayersTeamA(Arrays.asList("Alice", "Bob"));
-        sampleEvent.setPlayersTeamB(Arrays.asList("Charlie", "Dave"));
+        Team teamAlpha = new Team();
+        teamAlpha.setName("Team Alpha");
+
+        Player alpha1 = new Player("Alice", "Anderson", "alice@example.com", 25, "Attacker");
+        Player alpha2 = new Player("Bob", "Brown", "bob@example.com", 28, "Defender");
+
+
+        Team teamBeta = new Team();
+        teamBeta.setName("Team Beta");
+
+        Player beta1 = new Player("Charlie", "Clark", "charlie@example.com", 27, "Midfielder");
+        Player beta2 = new Player("Dave", "Dixon", "dave@example.com", 30, "Goalkeeper");
+
+        teamAlpha.setPlayers(List.of(alpha1, alpha2));
+        teamBeta.setPlayers(List.of(beta1, beta2));
+        sampleEvent.setTeamA(teamAlpha);
+        sampleEvent.setTeamB(teamBeta);
         sampleEvent.setCity("Paris");
     }
 
@@ -101,10 +116,18 @@ public class EventServiceTest {
         Event result = eventService.createEvent(sampleEvent);
 
         assertThat(result).isEqualTo(sampleEvent);
-        assertThat(result.getTeamA()).isEqualTo("Team Alpha");
-        assertThat(result.getTeamB()).isEqualTo("Team Beta");
-        assertThat(result.getPlayersTeamA()).containsExactly("Alice", "Bob");
-        assertThat(result.getPlayersTeamB()).containsExactly("Charlie", "Dave");
+        assertThat(result.getTeamA().getName()).isEqualTo("Team Alpha");
+        assertThat(result.getTeamB().getName()).isEqualTo("Team Beta");
+        assertThat(result.getTeamA().getPlayers().stream()
+                .map(Player::getFirstName)
+                .toList())
+                .containsExactly("Alice", "Bob");
+
+        assertThat(result.getTeamB().getPlayers().stream()
+                .map(Player::getFirstName)
+                .toList())
+                .containsExactly("Charlie", "Dave");
+
         assertThat(result.getCity()).isEqualTo("Paris");
 
         verify(eventRepository).save(sampleEvent);
@@ -116,16 +139,23 @@ public class EventServiceTest {
         withTeams.setName("Demi-finale");
         withTeams.setDescription("Match serré");
         withTeams.setEventDate(LocalDateTime.now().plusDays(5));
-        withTeams.setTeamA("Dragons");
-        withTeams.setTeamB("Phœnix");
+        Team dragons = new Team();
+        dragons.setName("Dragons");
 
-        when(eventRepository.existsByName(anyString())).thenReturn(false);
+        Team phoenix = new Team();
+        phoenix.setName("Phœnix");
+
+        withTeams.setTeamA(dragons);
+        withTeams.setTeamB(phoenix);
+
+        when(eventRepository.existsByName("Demi-finale")).thenReturn(false);
         when(eventRepository.save(withTeams)).thenReturn(withTeams);
 
         Event result = eventService.createEvent(withTeams);
 
-        assertThat(result.getTeamA()).isEqualTo("Dragons");
-        assertThat(result.getTeamB()).isEqualTo("Phœnix");
+        assertThat(result.getTeamA()).isEqualTo(dragons);
+        assertThat(result.getTeamB()).isEqualTo(phoenix);
+
     }
 
 
@@ -148,8 +178,17 @@ public class EventServiceTest {
         Event e1 = new Event();
         e1.setDescription("Desc");
         e1.setEventDate(LocalDateTime.now());
-        e1.setTeamA("A");
-        e1.setTeamB("B");
+        Team teamA = new Team();
+        teamA.setName("Team A");
+        teamA.setRegion("EU");
+        teamA.setFoundedDate(LocalDateTime.now());
+
+        Team teamB = new Team();
+        teamB.setName("Team B");
+        teamB.setRegion("EU");
+        teamB.setFoundedDate(LocalDateTime.now());
+        e1.setTeamA(teamA);
+        e1.setTeamB(teamB);
         assertThatThrownBy(() -> eventService.createEvent(e1))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event name is required");
@@ -157,8 +196,17 @@ public class EventServiceTest {
         Event e2 = new Event();
         e2.setName("Name");
         e2.setEventDate(LocalDateTime.now());
-        e2.setTeamA("A");
-        e2.setTeamB("B");
+        Team teamA2 = new Team();
+        teamA2.setName("Team A");
+        teamA2.setRegion("EU");
+        teamA2.setFoundedDate(LocalDateTime.now());
+
+        Team teamB2 = new Team();
+        teamB2.setName("Team B");
+        teamB2.setRegion("EU");
+        teamB2.setFoundedDate(LocalDateTime.now());
+        e2.setTeamA(teamA2);
+        e2.setTeamB(teamB2);
         assertThatThrownBy(() -> eventService.createEvent(e2))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event description is required");
@@ -167,8 +215,17 @@ public class EventServiceTest {
         e2b.setName("Name");
         e2b.setDescription("   ");
         e2b.setEventDate(LocalDateTime.now());
-        e2b.setTeamA("A");
-        e2b.setTeamB("B");
+        Team teamA2b = new Team();
+        teamA2b.setName("Team A");
+        teamA2b.setRegion("EU");
+        teamA2b.setFoundedDate(LocalDateTime.now());
+
+        Team teamB2b = new Team();
+        teamB2b.setName("Team B");
+        teamB2b.setRegion("EU");
+        teamB2b.setFoundedDate(LocalDateTime.now());
+        e2b.setTeamA(teamA2b);
+        e2b.setTeamB(teamB2b);
         assertThatThrownBy(() -> eventService.createEvent(e2b))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event description is required");
@@ -176,8 +233,17 @@ public class EventServiceTest {
         Event e3 = new Event();
         e3.setName("Name");
         e3.setDescription("Desc");
-        e3.setTeamA("A");
-        e3.setTeamB("B");
+        Team teamA3 = new Team();
+        teamA3.setName("Team A");
+        teamA3.setRegion("EU");
+        teamA3.setFoundedDate(LocalDateTime.now());
+
+        Team teamB3 = new Team();
+        teamB3.setName("Team B");
+        teamB3.setRegion("EU");
+        teamB3.setFoundedDate(LocalDateTime.now());
+        e3.setTeamA(teamA3);
+        e3.setTeamB(teamB3);
         assertThatThrownBy(() -> eventService.createEvent(e3))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event date is required");
@@ -186,7 +252,11 @@ public class EventServiceTest {
         e4.setName("Name");
         e4.setDescription("Desc");
         e4.setEventDate(LocalDateTime.now());
-        e4.setTeamB("B");
+        Team teamB4 = new Team();
+        teamB4.setName("Team B");
+        teamB4.setRegion("EU");
+        teamB4.setFoundedDate(LocalDateTime.now());
+        e4.setTeamB(teamB4);
         assertThatThrownBy(() -> eventService.createEvent(e4))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Both teamA and teamB are required");
@@ -195,42 +265,15 @@ public class EventServiceTest {
         e5.setName("Name");
         e5.setDescription("Desc");
         e5.setEventDate(LocalDateTime.now());
-        e5.setTeamA("A");
+        Team teamA5 = new Team();
+        teamA5.setName("Team A");
+        teamA5.setRegion("EU");
+        teamA5.setFoundedDate(LocalDateTime.now());
+
+        e5.setTeamA(teamA5);
         assertThatThrownBy(() -> eventService.createEvent(e5))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Both teamA and teamB are required");
-
-        Event input = new Event();
-        input.setName("Match");
-        input.setDescription("Desc");
-        input.setEventDate(LocalDateTime.of(2025, 8, 1, 18, 0));
-        input.setTeamA(" ");
-        input.setTeamB("B");
-        input.setPlayersTeamA(List.of("P1"));
-        input.setPlayersTeamB(List.of("P2"));
-        input.setCity("Lyon");
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            eventService.createEvent(input);
-        });
-
-        assertEquals("Both teamA and teamB are required", exception.getMessage());
-
-        Event input2 = new Event();
-        input2.setName("Match");
-        input2.setDescription("Desc");
-        input2.setEventDate(LocalDateTime.of(2025, 8, 1, 18, 0));
-        input2.setTeamA("A");
-        input2.setTeamB(" ");
-        input2.setPlayersTeamA(List.of("P1"));
-        input2.setPlayersTeamB(List.of("P2"));
-        input2.setCity("Lyon");
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            eventService.createEvent(input2);
-        });
-
-        assertEquals("Both teamA and teamB are required", ex.getMessage());
     }
 
 
@@ -241,10 +284,25 @@ public class EventServiceTest {
         updated.setDescription("New Desc");
         updated.setEventDate(LocalDateTime.of(2025, 2, 2, 14, 0));
         updated.setActive(false);
-        updated.setTeamA("New Team A");
-        updated.setTeamB("New Team B");
-        updated.setPlayersTeamA(Arrays.asList("NewA1", "NewA2"));
-        updated.setPlayersTeamB(Arrays.asList("NewB1", "NewB2"));
+        Team teamA = new Team();
+        teamA.setName("New Team A");
+        teamA.setRegion("EU");
+        teamA.setFoundedDate(LocalDateTime.now());
+
+        Team teamB = new Team();
+        teamB.setName("New Team B");
+        teamB.setRegion("EU");
+        teamB.setFoundedDate(LocalDateTime.now());
+        updated.setTeamA(teamA);
+        updated.setTeamB(teamB);
+        Player newA1 = new Player("NewA1", "LastA1", "a1@example.com", 25, "Forward");
+        Player newA2 = new Player("NewA2", "LastA2", "a2@example.com", 26, "Midfielder");
+
+        Player newB1 = new Player("NewB1", "LastB1", "b1@example.com", 24, "Defender");
+        Player newB2 = new Player("NewB2", "LastB2", "b2@example.com", 27, "Goalkeeper");
+
+        updated.getTeamA().setPlayers(Arrays.asList(newA1, newA2));
+        updated.getTeamB().setPlayers(Arrays.asList(newB1, newB2));
         updated.setCity("Lyon");
 
         when(eventRepository.findById(1L)).thenReturn(Optional.of(sampleEvent));
@@ -256,10 +314,17 @@ public class EventServiceTest {
         assertThat(result.getDescription()).isEqualTo("New Desc");
         assertThat(result.getEventDate()).isEqualTo(LocalDateTime.of(2025, 2, 2, 14, 0));
         assertThat(result.getActive()).isFalse();
-        assertThat(result.getTeamA()).isEqualTo("New Team A");
-        assertThat(result.getTeamB()).isEqualTo("New Team B");
-        assertThat(result.getPlayersTeamA()).containsExactly("NewA1", "NewA2");
-        assertThat(result.getPlayersTeamB()).containsExactly("NewB1", "NewB2");
+        assertThat(result.getTeamA()).isEqualTo(teamA);
+        assertThat(result.getTeamB()).isEqualTo(teamB);
+        assertThat(result.getTeamA().getPlayers().stream()
+                .map(Player::getFirstName)
+                .toList())
+                .containsExactly("NewA1", "NewA2");
+
+        assertThat(result.getTeamB().getPlayers().stream()
+                .map(Player::getFirstName)
+                .toList())
+                .containsExactly("NewB1", "NewB2");
         assertThat(result.getCity()).isEqualTo("Lyon");
     }
 
@@ -286,8 +351,17 @@ public class EventServiceTest {
         invalid.setName(" ");
         invalid.setDescription("D");
         invalid.setEventDate(LocalDateTime.now());
-        invalid.setTeamA("A");
-        invalid.setTeamB("B");
+        Team teamA = new Team();
+        teamA.setName("New Team A");
+        teamA.setRegion("EU");
+        teamA.setFoundedDate(LocalDateTime.now());
+
+        Team teamB = new Team();
+        teamB.setName("New Team B");
+        teamB.setRegion("EU");
+        teamB.setFoundedDate(LocalDateTime.now());
+        invalid.setTeamA(teamA);
+        invalid.setTeamB(teamB);
         assertThatThrownBy(() -> eventService.updateEvent(1L, invalid))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event name is required");
@@ -296,8 +370,17 @@ public class EventServiceTest {
         invalid2.setName("Valid");
         invalid2.setDescription("  ");
         invalid2.setEventDate(LocalDateTime.now());
-        invalid2.setTeamA("A");
-        invalid2.setTeamB("B");
+        Team teamA2 = new Team();
+        teamA2.setName("New Team A");
+        teamA2.setRegion("EU");
+        teamA2.setFoundedDate(LocalDateTime.now());
+
+        Team teamB2 = new Team();
+        teamB2.setName("New Team B");
+        teamB2.setRegion("EU");
+        teamB2.setFoundedDate(LocalDateTime.now());
+        invalid2.setTeamA(teamA2);
+        invalid2.setTeamB(teamB2);
         assertThatThrownBy(() -> eventService.updateEvent(1L, invalid2))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event description is required");
@@ -305,8 +388,17 @@ public class EventServiceTest {
         Event invalid3 = new Event();
         invalid3.setName("Valid");
         invalid3.setDescription("D");
-        invalid3.setTeamA("A");
-        invalid3.setTeamB("B");
+        Team teamA3 = new Team();
+        teamA3.setName("New Team A");
+        teamA3.setRegion("EU");
+        teamA3.setFoundedDate(LocalDateTime.now());
+
+        Team teamB3 = new Team();
+        teamB3.setName("New Team B");
+        teamB3.setRegion("EU");
+        teamB3.setFoundedDate(LocalDateTime.now());
+        invalid3.setTeamA(teamA3);
+        invalid3.setTeamB(teamB3);
         assertThatThrownBy(() -> eventService.updateEvent(1L, invalid3))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event date is required");
@@ -315,7 +407,11 @@ public class EventServiceTest {
         invalid4.setName("Valid");
         invalid4.setDescription("D");
         invalid4.setEventDate(LocalDateTime.now());
-        invalid4.setTeamB("B");
+        Team teamB4 = new Team();
+        teamB4.setName("New Team B");
+        teamB4.setRegion("EU");
+        teamB4.setFoundedDate(LocalDateTime.now());
+        invalid4.setTeamB(teamB4);
         assertThatThrownBy(() -> eventService.updateEvent(1L, invalid4))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Both teamA and teamB are required");
@@ -324,58 +420,15 @@ public class EventServiceTest {
         invalid5.setName("Valid");
         invalid5.setDescription("D");
         invalid5.setEventDate(LocalDateTime.now());
-        invalid5.setTeamA("A");
+        Team teamA5 = new Team();
+        teamA5.setName("New Team A");
+        teamA5.setRegion("EU");
+        teamA5.setFoundedDate(LocalDateTime.now());
+        invalid5.setTeamA(teamA5);
         assertThatThrownBy(() -> eventService.updateEvent(1L, invalid5))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Both teamA and teamB are required");
 
-        Event noA = new Event();
-        noA.setName("Name"); noA.setDescription("Desc");
-        noA.setEventDate(LocalDateTime.now());
-        noA.setTeamB("B");
-        assertThatThrownBy(() -> eventService.updateEvent(1L, noA))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Both teamA and teamB are required");
-
-        Event noB = new Event();
-        noB.setName("Name"); noB.setDescription("Desc");
-        noB.setEventDate(LocalDateTime.now());
-        noB.setTeamA("A");
-        assertThatThrownBy(() -> eventService.updateEvent(1L, noB))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Both teamA and teamB are required");
-
-        Event input = new Event();
-        input.setName("Match");
-        input.setDescription("Desc");
-        input.setEventDate(LocalDateTime.of(2025, 8, 1, 18, 0));
-        input.setTeamA(" ");
-        input.setTeamB("B");
-        input.setPlayersTeamA(List.of("P1"));
-        input.setPlayersTeamB(List.of("P2"));
-        input.setCity("Lyon");
-
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            eventService.createEvent(input);
-        });
-
-        assertEquals("Both teamA and teamB are required", exception.getMessage());
-
-        Event input2 = new Event();
-        input2.setName("Match");
-        input2.setDescription("Desc");
-        input2.setEventDate(LocalDateTime.of(2025, 8, 1, 18, 0));
-        input2.setTeamA("A");
-        input2.setTeamB(" ");
-        input2.setPlayersTeamA(List.of("P1"));
-        input2.setPlayersTeamB(List.of("P2"));
-        input2.setCity("Lyon");
-
-        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class, () -> {
-            eventService.createEvent(input2);
-        });
-
-        assertEquals("Both teamA and teamB are required", ex.getMessage());
     }
 
 
@@ -458,16 +511,31 @@ public class EventServiceTest {
     void shouldGenerateTeaserCorrectly() {
         Event e = new Event();
         e.setName("Grande Finale");
-        e.setTeamA("Dragons");
-        e.setTeamB("Phœnix");
-        e.setPlayersTeamA(List.of("Alice", "Bob"));
-        e.setPlayersTeamB(List.of("Xavier", "Yasmine"));
+        Team teamA = new Team();
+        teamA.setName("Dragons");
+        teamA.setRegion("EU");
+        teamA.setFoundedDate(LocalDateTime.now());
+
+        Team teamB = new Team();
+        teamB.setName("Phœnix");
+        teamB.setRegion("EU");
+        teamB.setFoundedDate(LocalDateTime.now());
+        e.setTeamA(teamA);
+        e.setTeamB(teamB);
+        Player alpha1 = new Player("Alice", "Anderson", "alice@example.com", 25, "Attacker");
+        Player alpha2 = new Player("Bob", "Brown", "bob@example.com", 28, "Defender");
+
+        Player beta1 = new Player("Charlie", "Clark", "charlie@example.com", 27, "Midfielder");
+        Player beta2 = new Player("Dave", "Dixon", "dave@example.com", 30, "Goalkeeper");
+
+        e.getTeamA().setPlayers(List.of(alpha1, alpha2));
+        e.getTeamB().setPlayers(List.of(beta1, beta2));
         e.setEventDate(LocalDateTime.of(2025, 7, 1, 20, 0));
         e.setCity("Paris");
 
         String teaser = eventService.generateTeaser(e);
 
-        String expected = "Dragons vs Phœnix – 2025-07-01T20:00 at Paris. " + "Players: [Alice, Bob] vs [Xavier, Yasmine]";
+        String expected = "Dragons vs Phœnix – 2025-07-01T20:00 at Paris. Players: Alice Anderson, Bob Brown vs Charlie Clark, Dave Dixon";
         assertThat(teaser).isEqualTo(expected);
     }
 

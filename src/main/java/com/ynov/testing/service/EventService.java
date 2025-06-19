@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import com.ynov.testing.model.Player;
 
 /**
  * Service class for managing Event entities
@@ -71,8 +73,6 @@ public class EventService {
         existingEvent.setActive(eventData.getActive());
         existingEvent.setTeamA(eventData.getTeamA());
         existingEvent.setTeamB(eventData.getTeamB());
-        existingEvent.setPlayersTeamA(eventData.getPlayersTeamA());
-        existingEvent.setPlayersTeamB(eventData.getPlayersTeamB());
         existingEvent.setCity(eventData.getCity());
         existingEvent.setTeaser(eventData.getTeaser());
 
@@ -118,8 +118,25 @@ public class EventService {
         });
     }
     public String generateTeaser(Event event) {
-        return String.format("%s vs %s – %s at %s. Players: %s vs %s", event.getTeamA(), event.getTeamB(), event.getEventDate(), event.getCity(), event.getPlayersTeamA(), event.getPlayersTeamB());
+        String playersTeamA = event.getTeamA().getPlayers().stream()
+                .map(player -> player.getFirstName() + " " + player.getLastName())
+                .collect(Collectors.joining(", "));
+
+        String playersTeamB = event.getTeamB().getPlayers().stream()
+                .map(player -> player.getFirstName() + " " + player.getLastName())
+                .collect(Collectors.joining(", "));
+
+        return String.format(
+                "%s vs %s – %s at %s. Players: %s vs %s",
+                event.getTeamA().getName(),
+                event.getTeamB().getName(),
+                event.getEventDate(),
+                event.getCity(),
+                playersTeamA,
+                playersTeamB
+        );
     }
+
 
 
     public void cancelEvent(Long id) {
@@ -162,7 +179,7 @@ public class EventService {
         if (event.getEventDate() == null) {
             throw new IllegalArgumentException("Event date is required");
         }
-        if (event.getTeamA() == null || event.getTeamA().trim().isEmpty() || event.getTeamB() == null || event.getTeamB().trim().isEmpty()) {
+        if (event.getTeamA() == null || event.getTeamB() == null) {
             throw new IllegalArgumentException("Both teamA and teamB are required");
         }
     }
