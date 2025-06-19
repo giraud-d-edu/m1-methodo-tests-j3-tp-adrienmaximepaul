@@ -60,5 +60,11 @@ Un autre test s’assure qu’il est également impossible de mettre à jour un 
 
 ### 5- Ajouter un champ teaser pour l'événement e-sport ###
 
-Pour le teaser dans le modele event j'ai rajouter une entrée text pour sauvegarder le teaser puis dans le service j'ai rajouter une methode generateTeaser qui prend l'event en parametre et qui renvoie un string qui est formater pour afficher les donner par exemple "Dragons vs Phœnix – 2025-07-01T20:00 at Paris. " + "Players: Alice, Bob vs Xavier, Yasmine"
-et dans le create et l'update je créer et met àjour le teaser avec la methode pour la partis test je verifie 
+Pour améliorer la présentation des événements, j’ai ajouté un champ teaser de type texte dans le modèle Event afin de stocker une description courte et dynamique de l’événement.
+
+Dans le service, j’ai créé une méthode generateTeaser qui prend un objet Event en paramètre et génère une chaîne de caractères formatée. Cette chaîne résume l’événement en affichant, par exemple :
+"Dragons vs Phœnix – 2025-07-01T20:00 at Paris. Players: Alice, Bob vs Xavier, Yasmine".
+
+Lors de la création (createEvent) et de la mise à jour (updateEvent) d’un événement, cette méthode est appelée pour générer et enregistrer automatiquement le teaser correspondant, garantissant ainsi que le teaser soit toujours à jour avec les informations de l’événement.
+
+Côté tests, j’ai ajouté une vérification qui s’assure que la méthode génère correctement le teaser en fonction des données fournies, validant ainsi la bonne construction du texte résumé.
