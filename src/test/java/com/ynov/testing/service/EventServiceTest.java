@@ -505,4 +505,15 @@ public class EventServiceTest {
             assertEquals("Impossible d'annuler un événement à moins de 24h avant sa date.", ex.getMessage());
         }
     }
+
+    @Test
+    void shouldThrowWhenCancelEventByIdWithNullOrNonPositive() {
+        assertThatThrownBy(() -> eventService.cancelEvent(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event ID must be positive");
+
+        assertThatThrownBy(() -> eventService.cancelEvent(0L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event ID must be positive");
+    }
 }
