@@ -4,7 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="f8e92a4d-68bc-46d2-b0fa-9727e50598fc" name="Changes" comment="" />
+    <list default="true" id="f8e92a4d-68bc-46d2-b0fa-9727e50598fc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ynov/testing/repository/EventRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ynov/testing/repository/EventRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/ynov/testing/service/EventService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/ynov/testing/service/EventService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/test/java/com/ynov/testing/service/EventServiceTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/test/java/com/ynov/testing/service/EventServiceTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ynov/testing/repository/EventRepository.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ynov/testing/repository/EventRepository.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/ynov/testing/service/EventService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/ynov/testing/service/EventService.class" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -33,24 +40,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;JUnit.EventRepositoryTest.testArchive_Event30Plus.executor&quot;: &quot;Run&quot;,
-    &quot;JUnit.EventServiceTest.shouldGetTodaysEvents.executor&quot;: &quot;Coverage&quot;,
-    &quot;JUnit.EventServiceTest.testArchive_Event30Plus.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;evenements-du-jour&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/paulp/Documents/M1/coursTest/m1-methodo-tests-j3-tp-adrienmaximepaul&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "JUnit.EventRepositoryTest.testArchive_Event30Plus.executor": "Run",
+    "JUnit.EventServiceTest.shouldGetTodaysEvents.executor": "Run",
+    "JUnit.EventServiceTest.testArchive_Event30Plus.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "test/evenement-du-jour",
+    "last_opened_file_path": "C:/Users/paulp/Documents/M1/coursTest/m1-methodo-tests-j3-tp-adrienmaximepaul",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="C:\Users\paulp\Documents\M1\coursTest\m1-methodo-tests-j3-tp-adrienmaximepaul\src\main\java\com\ynov\testing\service" />
@@ -138,11 +145,23 @@
       <option name="presentableId" value="Default" />
       <updated>1750315290839</updated>
       <workItem from="1750315294684" duration="5506000" />
+      <workItem from="1750326599712" duration="2513000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/m1_methodo_tests_j3_tp_adrienmaximepaul$EventServiceTest_shouldGetTodaysEvents.ic" NAME="EventServiceTest.shouldGetTodaysEvents Coverage Results" MODIFIED="1750321124672" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="idea" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="true">

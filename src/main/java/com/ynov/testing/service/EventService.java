@@ -138,6 +138,16 @@ public class EventService {
         }
     }
 
+    public List<Event> getTodaysEvents(){
+        LocalDateTime startOfDay = LocalDateTime.now().toLocalDate().atStartOfDay();
+        LocalDateTime endOfDay = LocalDateTime.now().toLocalDate().atTime(23, 59, 59);
+
+        List<Event> events = eventRepository.findByEventDateAfterAndDateBefore(startOfDay, endOfDay);
+        
+        return events;
+        
+    }
+
     // Méthode privée de validation
     private void validateEvent(Event event) {
         if (event == null) {

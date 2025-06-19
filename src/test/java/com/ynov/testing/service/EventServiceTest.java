@@ -537,21 +537,21 @@ public class EventServiceTest {
             mockedStatic.when(LocalDateTime::now).thenReturn(fixedNow);
 
             Event todayEvent = new Event("Today event", "Event today", fixedNow);
-            todayEvent.setActive(true);
 
             Event tomorrowEvent = new Event("Tomorrow event", "Event tomorrow", fixedNow.plusDays(1));
-            tomorrowEvent.setActive(true);
 
             LocalDateTime startOfDay = fixedNow.toLocalDate().atStartOfDay();
             LocalDateTime endOfDay = fixedNow.toLocalDate().atTime(23, 59, 59);
 
-            when(eventRepository.findByEventDateBetweenAndActiveTrue(startOfDay, endOfDay))
+            when(eventRepository.findByEventDateAfterAndDateBefore(startOfDay, endOfDay))
                 .thenReturn(List.of(todayEvent));
 
-            eventService.getTodaysEvents();
+            List<Event> todayEvents = eventService.getTodaysEvents();
 
-            assertFalse(todayEvent.getActive());
-            assertTrue(tomorrowEvent.getActive());
+            assertEquals(1, todayEvents.size());
+            
+            verify(eventRepository).findByEventDateAfterAndDateBefore(startOfDay, endOfDay);
+            
         }
     }
 }
