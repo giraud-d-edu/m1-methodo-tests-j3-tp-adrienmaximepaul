@@ -1,342 +1,70 @@
-# J2—TD
+# Test Unitaire TDD #
 
-Ce projet a été générer via Perplexity Lab. Il peut contenir des incohérences, mais l'essentiel pour ce TD marche
+#### 1- Récupérer les événements du jour ####
+Nom du test: `shouldGetTodaysEvents`  
 
-Vous pouvez utilise rJava JDK 24 à la place du 21
+Dans un premier temps, `LocalDateTime` est mockée pour que la date soit fixe dans tout le test et être strictement identique à celle du service.  
+Le test vient ensuite simuler deux événements, un pour aujourd'hui et un pour demain.  
+On simule la tranche horaire de la journée en donnant la date du jour et l'heure de fin de la journée.  
+Ensuite, on simule la réponse du repository pour qu'il retourne uniquement l'événement paramétré avec une date correspondant à aujourd'hui.  
+Puis on appelle la méthode du service en donnant en paramètre le résultat simulé du répertoire et on vérifie que le résultat est bien celui attendu, c'est-à-dire l'événement d'aujourd'hui.  
+Enfin, on regarde que la taille de la liste retournée est de 1, car l'autre événement est incorrect, si la taille est de 2, le test échoue.   
+On vérifie également que la méthode du repository a bien été appelée avec les bons paramètres, c'est-à-dire le début et la fin de la journée.   
+***
+Nom de la méthode dans le service: `getTodaysEvents`  
+  
+La methode commence par récupérer le début et la fin de la journée actuelle, puis elle appelle le repository pour récupérer les événements dont la date est comprise entre ces deux bornes.
+***
+Nom de la méthode dans le repository: `findByEventDateAfterAndDateBefore`:  
+  
+La méthode du repository est appelée avec les paramètres de début et de fin de journée, et elle retourne une liste d'événements dont la date est comprise entre ces deux bornes.
+***
+#### 2- Archiver les événements vieux de plus de 30 jours ####
 
+#### Rédaction des tests ####
 
-# Spring Boot Testing Methodology Project
+Nous avons besoin de créer un test qui va vérifier qu'une fois la méthode d'archivage appelé, les événements vieux de plus de 30 jours sont bien archivés.
+Pour cela on créer des événements de test à une date antérieure de plus de 30 jours, on mock la date actuelle afin de s'assurer que la date actuelle est bien celle que l'on souhaite, puis on appelle la méthode d'archivage et on vérifie que les événements de test sont bien archivés.
+On vient également vérifier que l'on demande au repository uniquement les événements qui sont vieux de plus de 30 jours.
 
-## 📚 Course: Testing Methodology - Ynov Campus
+#### Implémentation de la méthode d'archivage ####
 
-This is a complete Spring Boot educational project designed for learning and practicing testing methodologies with JUnit 5. The project implements a RESTful API for managing players using the Controller-Service-Repository pattern with H2 database.
+Dans un premier temps, on va créer une méthode de récupération des événements antérieurs à une date donnée qui ne sont pas archivés (cela nous permettra de ne pas récupérer les données qui sont déjà archivées.).
+Ensuite, on va créer une méthode d'archivage qui va calculer la date limite d'archivage (30 jours avant la date actuelle) et qui va appeler la méthode de récupération des événements antérieurs à cette date limite. Enfin, on modifiera les événements récupérés pour passer leur propriété `active` à `false` et on les enregistrera dans le repository.
 
-## 🎯 Learning Objectives
+### 3- Modifier l'entité pour ajouter un statut d'annulation ###
 
-- **Write Unit Tests** with JUnit 5 and Mockito
-- **Understand Testing Techniques** for different layers (Controller, Service, Repository)
-- **Implement Integration Tests** with Spring Boot Test
-- **Practice TDD (Test-Driven Development)** methodology
-- **Learn Testing Best Practices** and patterns
-- **Execute and Generate Test Reports** with code coverage
+### Rédaction des tests ###
 
-## 🏗️ Project Architecture
+Nous allons créer un test qui va vérifier que l'on peut annuler un événement en modifiant sa propriété `canceled` à `true` uniquement si l'événement a une date de début supérieure à 24 h de la date actuelle. Pour cela, nous allons créer 3 tests :
+1. Un test qui va vérifier que l'on peut annuler un événement si la date de début est supérieure à 24 h de la date actuelle. Pour cela, on va créer un événement de test avec une date de début supérieure à 24 h de la date actuelle, on va appeler la méthode d'annulation et vérifier que la propriété `canceled` est bien passée à `true`. On mock la date actuelle afin de s'assurer que la date actuelle est bien celle que l'on souhaite.
+2. Un test qui va vérifier que l'on ne peut pas annuler un événement si la date de début est inférieure à 24h de la date actuelle. Pour cela, on va créer un événement de test avec une date de début inférieure à 24h de la date actuelle, on va appeler la méthode d'annulation et vérifier que la propriété `canceled` n'est pas passée à `true`. On mock la date actuelle afin de s'assurer que la date actuelle est bien celle que l'on souhaite.
+3. Un test qui va vérifier que l'on fournie bien un Id d'événement positif et qui existe. Pour cela, on va appeler la méthode d'annulation avec un Id d'événement négatif ou inexistant et vérifier que l'on lève bien une exception. De plus, on va mock un retour null de la part du répository pour un id afin de vérifier que l'on lève bien une exception si l'événement n'existe pas.
 
-The project follows the **Controller-Service-Repository** pattern:
+### Implémentation de la méthode d'annulation ###
 
-```
-📦 src/main/java/com/ynov/testing/
-├── 🚀 TestingMethodologyApplication.java    # Main Spring Boot application
-├── 📋 controller/
-│   └── PlayerController.java               # REST API endpoints
-├── 🔧 service/
-│   └── PlayerService.java                  # Business logic layer
-├── 💾 repository/
-│   └── PlayerRepository.java               # Data access layer
-└── 📊 model/
-    └── Player.java                         # Entity/Model class
+Pour implémenter la méthode d'annulation, nous allons, dans un premier temps, ajouter un champ `canceled` de type booléen à l'entité `Event`, celui-ci permettreras de savoir si l'événement est annulé ou non. Par défaut, ce champ sera à `false`. Ensuite, nous allons créer une méthode `cancelEvent` qui va prendre en paramètre l'Id de l'événement à annuler. Cette méthode va vérifier si l'événement existe et si sa date de début est supérieure à 24 h de la date actuelle. Si c'est le cas, elle va modifier la propriété `canceled` de l'événement à `true` et enregistrer l'événement dans le repository, sinon elle va lever une exception en fonction de la situation.
 
-📦 src/test/java/com/ynov/testing/
-├── 🧪 controller/
-│   └── PlayerControllerTest.java           # Controller unit tests
-├── 🔬 service/
-│   └── PlayerServiceTest.java              # Service unit tests
-└── 🔍 repository/
-    └── PlayerRepositoryTest.java           # Repository integration tests
-```
+## Événements e-sport ##
 
-## 🛠️ Technologies Used
+### 4- Indiquer les équipes d'un événement e-sport ###
+Pour permettre d’associer deux équipes à un événement e-sport, j’ai tout d’abord ajouté dans le modèle Event deux références vers le modèle Team. Cela permet de stocker les équipes participantes directement dans l’entité événement.
 
-- **Java 21** (Latest LTS version)
-- **Spring Boot 3.4.5** (Latest stable version)
-- **Spring Data JPA** (Database operations)
-- **H2 Database** (In-memory database for development and testing)
-- **JUnit 5** (Testing framework)
-- **Mockito** (Mocking framework)
-- **Maven** (Build tool and dependency management)
-- **Jackson** (JSON serialization/deserialization)
+Ensuite, dans la méthode validateEvent, j’ai intégré une vérification afin de m’assurer que ces deux équipes (teamA et teamB) ne soient jamais nulles lors de la création ou de la mise à jour d’un événement. Cette validation garantit que chaque événement a bien deux équipes définies.
 
-## 🚀 Getting Started
+Côté tests, j’ai implémenté plusieurs cas pour vérifier le comportement attendu :
 
-### Prerequisites
+Un test vérifie qu’il est impossible de créer un événement si l’une des deux équipes est null.
 
-Before you begin, ensure you have the following installed:
+Un autre test s’assure qu’il est également impossible de mettre à jour un événement en passant une des équipes à null.
 
-1. **Java Development Kit (JDK) 21 or higher**
-2. **IntelliJ IDEA** (Community or Ultimate Edition)
-3. **Git** (for version control)
+### 5- Ajouter un champ teaser pour l'événement e-sport ###
 
-### Installation Guides
+Pour améliorer la présentation des événements, j’ai ajouté un champ teaser de type texte dans le modèle Event afin de stocker une description courte et dynamique de l’événement.
 
-📖 **Detailed installation instructions available in:**
-- [`docs/INSTALLATION.md`](docs/INSTALLATION.md) - Complete setup guide for Windows, macOS, and Linux
-- [`docs/INTELLIJ_SETUP.md`](docs/INTELLIJ_SETUP.md) - IntelliJ IDEA installation and configuration
-- [`docs/JAVA_INSTALLATION.md`](docs/JAVA_INSTALLATION.md) - Java JDK installation guide
+Dans le service, j’ai créé une méthode generateTeaser qui prend un objet Event en paramètre et génère une chaîne de caractères formatée. Cette chaîne résume l’événement en affichant, par exemple :
+"Dragons vs Phœnix – 2025-07-01T20:00 at Paris. Players: Alice, Bob vs Xavier, Yasmine".
 
-### Quick Start
+Lors de la création (createEvent) et de la mise à jour (updateEvent) d’un événement, cette méthode est appelée pour générer et enregistrer automatiquement le teaser correspondant, garantissant ainsi que le teaser soit toujours à jour avec les informations de l’événement.
 
-1. **Extract the project** to your desired location
-2. **Open IntelliJ IDEA** and select "Open Project"
-3. **Navigate** to the extracted folder and select `pom.xml`
-4. **Wait** for Maven to download dependencies
-5. **Run** the application using the green play button next to `TestingMethodologyApplication.java`
-
-## 🏃‍♂️ Running the Application
-
-### Method 1: Using IntelliJ IDEA
-1. Open `src/main/java/com/ynov/testing/TestingMethodologyApplication.java`
-2. Click the green play button (▶️) next to the class name
-3. The application will start on `http://localhost:8080`
-
-### Method 2: Using Maven Command Line
-```bash
-# Navigate to project directory
-cd spring-boot-testing-project
-
-# Run the application
-./mvnw spring-boot:run
-
-# On Windows:
-mvnw.cmd spring-boot:run
-```
-
-### Method 3: Using Java Command
-```bash
-# Compile the project
-./mvnw clean package
-
-# Run the JAR file
-java -jar target/testing-methodology-1.0.0.jar
-```
-
-## 🔍 Testing the Application
-
-### Running All Tests
-
-```bash
-# Run all tests
-./mvnw test
-
-# Run tests with coverage report
-./mvnw clean test jacoco:report
-```
-
-### Running Specific Test Categories
-
-```bash
-# Run only unit tests
-./mvnw test -Dtest="*Test"
-
-# Run only integration tests
-./mvnw test -Dtest="*IT"
-
-# Run specific test class
-./mvnw test -Dtest="PlayerServiceTest"
-```
-
-### Test Coverage Report
-
-After running tests with JaCoCo, view the coverage report:
-- Open `target/site/jacoco/index.html` in your browser
-
-## 🌐 API Endpoints
-
-### Player Management
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/players` | Get all players |
-| `GET` | `/api/players/{id}` | Get player by ID |
-| `POST` | `/api/players` | Create new player |
-| `PUT` | `/api/players/{id}` | Update existing player |
-| `DELETE` | `/api/players/{id}` | Delete player |
-
-### Search Operations
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/players/search/team/{teamName}` | Get players by team |
-| `GET` | `/api/players/search/position/{position}` | Get players by position |
-| `GET` | `/api/players/search/age?minAge=20&maxAge=30` | Get players by age range |
-| `GET` | `/api/players/search/name?fullName=John` | Search players by name |
-| `GET` | `/api/players/search/salary?minSalary=50000` | Get players by minimum salary |
-
-### Status Operations
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/players/active` | Get active players |
-| `GET` | `/api/players/inactive` | Get inactive players |
-| `PATCH` | `/api/players/{id}/activate` | Activate player |
-| `PATCH` | `/api/players/{id}/deactivate` | Deactivate player |
-
-### Statistics
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/api/players/count/team/{teamName}` | Count players in team |
-| `GET` | `/api/players/count/active` | Count active players |
-| `GET` | `/api/players/stats/team/{teamName}/average-age` | Get average age by team |
-| `GET` | `/api/players/health` | Service health check |
-
-## 📊 H2 Database Console
-
-Access the H2 database console at: `http://localhost:8080/h2-console`
-
-**Connection Details:**
-- **JDBC URL:** `jdbc:h2:mem:testdb`
-- **Username:** `sa`
-- **Password:** `password`
-
-## 🧪 Testing Exercises
-
-### 📝 Exercise 1: Basic Unit Testing
-**File:** `src/test/java/com/ynov/testing/service/PlayerServiceTest.java`
-
-**Objectives:**
-- Understand test structure (Given-When-Then)
-- Practice mocking with Mockito
-- Learn assertion techniques
-- Test exception scenarios
-
-**Tasks:**
-1. Run existing tests and analyze the results
-2. Add a new test method for `activatePlayer()`
-3. Create a test for edge case: activating already active player
-
-### 📝 Exercise 2: Controller Testing
-**File:** `src/test/java/com/ynov/testing/controller/PlayerControllerTest.java`
-
-**Objectives:**
-- Test REST endpoints with MockMvc
-- Validate JSON responses
-- Test HTTP status codes
-- Handle request/response mapping
-
-**Tasks:**
-1. Add test for pagination parameters
-2. Test invalid JSON input scenarios
-3. Create test for CORS headers
-
-### 📝 Exercise 3: Repository Integration Testing
-**File:** `src/test/java/com/ynov/testing/repository/PlayerRepositoryTest.java`
-
-**Objectives:**
-- Test database operations
-- Validate JPA queries
-- Test constraints and relationships
-- Use TestEntityManager
-
-**Tasks:**
-1. Add test for custom JPQL queries
-2. Test database constraints (unique email)
-3. Create test for bulk operations
-
-### 📝 Exercise 4: End-to-End Integration Testing
-**Create:** `src/test/java/com/ynov/testing/integration/PlayerIntegrationTest.java`
-
-**Objectives:**
-- Test complete application flow
-- Use TestRestTemplate
-- Test with real HTTP requests
-- Validate complete scenarios
-
-**Tasks:**
-1. Create full CRUD operation test
-2. Test business logic workflows
-3. Validate error handling
-
-## 📚 Learning Resources
-
-### Testing Documentation
-- [`docs/JUNIT5_GUIDE.md`](docs/JUNIT5_GUIDE.md) - Comprehensive JUnit 5 tutorial
-- [`docs/MOCKITO_GUIDE.md`](docs/MOCKITO_GUIDE.md) - Mockito framework guide
-- [`docs/TESTING_BEST_PRACTICES.md`](docs/TESTING_BEST_PRACTICES.md) - Testing patterns and practices
-- [`docs/SPRING_BOOT_TESTING.md`](docs/SPRING_BOOT_TESTING.md) - Spring Boot specific testing techniques
-
-### API Documentation
-- [`docs/API_DOCUMENTATION.md`](docs/API_DOCUMENTATION.md) - Complete API reference with examples
-
-## 🔧 Development Setup
-
-### IDE Configuration
-1. **Import Code Style:** Import `docs/idea-code-style.xml` in IntelliJ
-2. **Configure Maven:** Ensure Maven home is properly set
-3. **Set JDK:** Configure Project SDK to Java 21
-4. **Enable Annotations:** Enable annotation processing
-
-### Useful IDE Shortcuts
-- `Ctrl+Shift+T` (Windows/Linux) or `Cmd+Shift+T` (Mac): Create/Navigate to test
-- `Ctrl+Shift+F10` (Windows/Linux) or `Cmd+Shift+R` (Mac): Run test method
-- `Ctrl+Alt+Shift+T` (Windows/Linux) or `Cmd+Alt+Shift+T` (Mac): Run all tests in class
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-**Issue: Port 8080 already in use**
-```bash
-# Solution: Change port in application.properties
-server.port=8081
-```
-
-**Issue: Tests failing due to database locks**
-```bash
-# Solution: Use @DirtiesContext annotation or ensure proper cleanup
-```
-
-**Issue: Maven dependencies not downloading**
-```bash
-# Solution: Refresh Maven project
-./mvnw dependency:resolve
-```
-
-### Getting Help
-1. Check the troubleshooting section in [`docs/TROUBLESHOOTING.md`](docs/TROUBLESHOOTING.md)
-2. Review console logs for error messages
-3. Verify Java and Maven versions
-4. Ensure proper IDE configuration
-
-## 📈 Project Metrics
-
-After running tests, you can view:
-- **Test Results:** `target/surefire-reports/`
-- **Coverage Report:** `target/site/jacoco/index.html`
-- **Build Reports:** `target/`
-
-## 🎓 Assessment Criteria
-
-Your testing implementation will be evaluated on:
-
-1. **Test Coverage** (>80% line coverage)
-2. **Test Quality** (meaningful assertions, edge cases)
-3. **Test Organization** (clear naming, proper structure)
-4. **Mock Usage** (appropriate mocking strategies)
-5. **Integration Testing** (database operations, API endpoints)
-6. **Documentation** (clear test descriptions and comments)
-
-## 🤝 Contributing
-
-This is an educational project. Students are encouraged to:
-1. Add new test cases
-2. Improve existing tests
-3. Add documentation
-4. Report issues or suggestions
-
-## 📄 License
-
-This project is created for educational purposes as part of the Testing Methodology course at Ynov Campus.
-
-## 📞 Support
-
-For technical support or questions:
-1. Review the documentation in the `docs/` folder
-2. Check existing test examples
-3. Consult with your instructor
-4. Use the troubleshooting guide
-
----
-
-**Happy Testing! 🧪✨**
-
-*Remember: Good tests are the foundation of reliable software. Practice writing clear, maintainable, and comprehensive tests!*
+Côté tests, j’ai ajouté une vérification qui s’assure que la méthode génère correctement le teaser en fonction des données fournies, validant ainsi la bonne construction du texte résumé.
