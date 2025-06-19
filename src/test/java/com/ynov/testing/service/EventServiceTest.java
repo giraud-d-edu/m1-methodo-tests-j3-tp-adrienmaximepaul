@@ -187,5 +187,26 @@ class EventServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event not found with ID: 3");
     }
+    
+    @Test
+    void shouldReturnUpcomingEvents() {
+        List<Event> upcoming = Arrays.asList(sampleEvent);
+        when(eventRepository.findByEventDateAfter(any(LocalDateTime.class))).thenReturn(upcoming);
 
+        List<Event> result = eventService.getUpcomingEvents();
+
+        assertThat(result).isEqualTo(upcoming);
+        verify(eventRepository).findByEventDateAfter(any(LocalDateTime.class));
+    }
+
+    @Test
+    void shouldReturnPastEvents() {
+        List<Event> past = Arrays.asList(sampleEvent);
+        when(eventRepository.findByEventDateBefore(any(LocalDateTime.class))).thenReturn(past);
+
+        List<Event> result = eventService.getPastEvents();
+
+        assertThat(result).isEqualTo(past);
+        verify(eventRepository).findByEventDateBefore(any(LocalDateTime.class));
+    }
 }
