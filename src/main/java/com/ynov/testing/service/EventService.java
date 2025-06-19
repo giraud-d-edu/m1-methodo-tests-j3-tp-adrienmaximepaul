@@ -50,6 +50,8 @@ public class EventService {
         if (eventRepository.existsByName(event.getName())) {
             throw new IllegalArgumentException("Event name already exists: " + event.getName());
         }
+        String teaser = generateTeaser(event);
+        event.setTeaser(teaser);
 
         return eventRepository.save(event);
     }
@@ -67,6 +69,12 @@ public class EventService {
         existingEvent.setDescription(eventData.getDescription());
         existingEvent.setEventDate(eventData.getEventDate());
         existingEvent.setActive(eventData.getActive());
+        existingEvent.setTeamA(eventData.getTeamA());
+        existingEvent.setTeamB(eventData.getTeamB());
+        existingEvent.setPlayersTeamA(eventData.getPlayersTeamA());
+        existingEvent.setPlayersTeamB(eventData.getPlayersTeamB());
+        existingEvent.setCity(eventData.getCity());
+        existingEvent.setTeaser(eventData.getTeaser());
 
         return eventRepository.save(existingEvent);
     }
@@ -110,15 +118,7 @@ public class EventService {
         });
     }
     public String generateTeaser(Event event) {
-        return String.format(
-                "%s vs %s – %s at %s. Players: %s vs %s",
-                event.getTeamA(),
-                event.getTeamB(),
-                event.getEventDate(),
-                event.getCity(),
-                event.getPlayersTeamA(),
-                event.getPlayersTeamB()
-        );
+        return String.format("%s vs %s – %s at %s. Players: %s vs %s", event.getTeamA(), event.getTeamB(), event.getEventDate(), event.getCity(), event.getPlayersTeamA(), event.getPlayersTeamB());
     }
 
 
@@ -136,7 +136,7 @@ public class EventService {
         if (event.getEventDate() == null) {
             throw new IllegalArgumentException("Event date is required");
         }
-        if (event.getTeamA() == null || event.getTeamB() == null) {
+        if (event.getTeamA() == null || event.getTeamA().trim().isEmpty() || event.getTeamB() == null || event.getTeamB().trim().isEmpty()) {
             throw new IllegalArgumentException("Both teamA and teamB are required");
         }
     }
