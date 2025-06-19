@@ -77,4 +77,53 @@ class EventServiceTest {
         assertThat(result).isEmpty();
     }
 
+    @Test
+    void shouldCreateEventWhenValid() {
+        when(eventRepository.existsByName("Test Event")).thenReturn(false);
+        when(eventRepository.save(sampleEvent)).thenReturn(sampleEvent);
+
+        Event result = eventService.createEvent(sampleEvent);
+
+        assertThat(result).isEqualTo(sampleEvent);
+        verify(eventRepository).save(sampleEvent);
+    }
+
+    @Test
+    void shouldThrowWhenCreateEventNameExists() {
+        when(eventRepository.existsByName("Test Event")).thenReturn(true);
+
+        assertThatThrownBy(() -> eventService.createEvent(sampleEvent))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("Event name already exists: Test Event");
+    }
+
+    @Test
+    void shouldValidateCreateEventFields() {
+
+        assertThatThrownBy(() -> eventService.createEvent(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event cannot be null");
+
+        Event e1 = new Event();
+        e1.setDescription("Desc");
+        e1.setEventDate(LocalDateTime.now());
+        assertThatThrownBy(() -> eventService.createEvent(e1))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event name is required");
+
+        Event e2 = new Event();
+        e2.setName("Name");
+        e2.setEventDate(LocalDateTime.now());
+        assertThatThrownBy(() -> eventService.createEvent(e2))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event description is required");
+
+        Event e3 = new Event();
+        e3.setName("Name");
+        e3.setDescription("Desc");
+        assertThatThrownBy(() -> eventService.createEvent(e3))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event date is required");
+    }
+
 }
