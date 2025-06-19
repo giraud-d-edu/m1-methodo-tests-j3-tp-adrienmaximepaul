@@ -3,6 +3,7 @@ package com.ynov.testing.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * Event Entity - Simple entity for testing purposes
@@ -35,6 +36,13 @@ public class Event {
     @Column(name = "is_active")
     private Boolean active = true;
 
+    private String teamA;
+    private String teamB;
+    private List<String> playersTeamA;
+    private List<String> playersTeamB;
+    private String city;
+    private String teaser;
+
     // Constructeurs
     public Event() {}
 
@@ -60,6 +68,19 @@ public class Event {
     public Boolean getActive() { return active; }
     public void setActive(Boolean active) { this.active = active; }
 
+    public String getTeamA() { return teamA; }
+    public void setTeamA(String teamA) { this.teamA = teamA; }
+    public String getTeamB() { return teamB; }
+    public void setTeamB(String teamB) { this.teamB = teamB; }
+    public List<String> getPlayersTeamA() { return playersTeamA; }
+    public void setPlayersTeamA(List<String> playersTeamA) { this.playersTeamA = playersTeamA; }
+    public List<String> getPlayersTeamB() { return playersTeamB; }
+    public void setPlayersTeamB(List<String> playersTeamB) { this.playersTeamB = playersTeamB; }
+    public String getCity() { return city; }
+    public void setCity(String city) { this.city = city; }
+    public String getTeaser() { return teaser; }
+    public void setTeaser(String teaser) { this.teaser = teaser; }
+
     @Override
     public String toString() {
         return "Event{" +
@@ -69,4 +90,5 @@ public class Event {
                 ", active=" + active +
                 '}';
     }
+
 }
