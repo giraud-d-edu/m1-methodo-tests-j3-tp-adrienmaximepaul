@@ -170,4 +170,22 @@ class EventServiceTest {
                 .hasMessage("Event name is required");
     }
 
+    @Test
+    void shouldDeleteWhenExists() {
+        when(eventRepository.existsById(1L)).thenReturn(true);
+
+        eventService.deleteEvent(1L);
+
+        verify(eventRepository).deleteById(1L);
+    }
+
+    @Test
+    void shouldThrowWhenDeleteNotFound() {
+        when(eventRepository.existsById(3L)).thenReturn(false);
+
+        assertThatThrownBy(() -> eventService.deleteEvent(3L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event not found with ID: 3");
+    }
+
 }
