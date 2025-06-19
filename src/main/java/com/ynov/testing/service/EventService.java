@@ -118,6 +118,7 @@ public class EventService {
         });
     }
     public String generateTeaser(Event event) {
+        validateEvent(event);
         String playersTeamA = event.getTeamA().getPlayers().stream()
                 .map(player -> player.getFirstName() + " " + player.getLastName())
                 .collect(Collectors.joining(", "));

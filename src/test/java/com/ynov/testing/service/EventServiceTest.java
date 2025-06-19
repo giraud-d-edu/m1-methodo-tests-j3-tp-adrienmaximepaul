@@ -542,9 +542,9 @@ public class EventServiceTest {
 
         e.getTeamA().setPlayers(List.of(alpha1, alpha2));
         e.getTeamB().setPlayers(List.of(beta1, beta2));
+        e.setDescription("Finale du tournoi");
         e.setEventDate(LocalDateTime.of(2025, 7, 1, 20, 0));
         e.setCity("Paris");
-
         String teaser = eventService.generateTeaser(e);
 
         String expected = "Dragons vs Phœnix – 2025-07-01T20:00 at Paris. Players: Alice Anderson, Bob Brown vs Charlie Clark, Dave Dixon";
