@@ -48,5 +48,17 @@ Pour implémenter la méthode d'annulation, nous allons, dans un premier temps, 
 ## Événements e-sport ##
 
 ### 4- Indiquer les équipes d'un événement e-sport ###
+Pour permettre d’associer deux équipes à un événement e-sport, j’ai tout d’abord ajouté dans le modèle Event deux références vers le modèle Team. Cela permet de stocker les équipes participantes directement dans l’entité événement.
+
+Ensuite, dans la méthode validateEvent, j’ai intégré une vérification afin de m’assurer que ces deux équipes (teamA et teamB) ne soient jamais nulles lors de la création ou de la mise à jour d’un événement. Cette validation garantit que chaque événement a bien deux équipes définies.
+
+Côté tests, j’ai implémenté plusieurs cas pour vérifier le comportement attendu :
+
+Un test vérifie qu’il est impossible de créer un événement si l’une des deux équipes est null.
+
+Un autre test s’assure qu’il est également impossible de mettre à jour un événement en passant une des équipes à null.
 
 ### 5- Ajouter un champ teaser pour l'événement e-sport ###
+
+Pour le teaser dans le modele event j'ai rajouter une entrée text pour sauvegarder le teaser puis dans le service j'ai rajouter une methode generateTeaser qui prend l'event en parametre et qui renvoie un string qui est formater pour afficher les donner par exemple "Dragons vs Phœnix – 2025-07-01T20:00 at Paris. " + "Players: Alice, Bob vs Xavier, Yasmine"
+et dans le create et l'update je créer et met àjour le teaser avec la methode pour la partis test je verifie 
