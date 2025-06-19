@@ -122,6 +122,22 @@ public class EventService {
     }
 
 
+    public void cancelEvent(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("Event ID must be positive");
+        }
+        Optional<Event> event = eventRepository.findById(id);
+        if (event.isEmpty()) {
+            throw new IllegalArgumentException("Event not found with ID: " + id);
+        }
+        if (event.get().getEventDate().isAfter(LocalDateTime.now().plusHours(24))) {
+            event.get().setCanceled(true);
+            eventRepository.save(event.get());
+        } else {
+            throw new IllegalArgumentException("You can't cancel an event less than 24 hours before it starts.");
+        }
+    }
+
     // Méthode privée de validation
     private void validateEvent(Event event) {
         if (event == null) {

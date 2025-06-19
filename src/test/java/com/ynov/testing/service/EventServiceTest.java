@@ -479,35 +479,45 @@ public class EventServiceTest {
         try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
             mockedStatic.when(LocalDateTime::now).thenReturn(fixedNow);
 
-            Event event = new Event("New Event", "New event", fixedNow.minusDays(2));
+            Event event = new Event("New Event", "New event", fixedNow.plusDays(2)); // event dans 2 jours
+            event.setCanceled(false);
+            event.setId(1L);
 
-            when(eventRepository.getReferenceById(event.getId())).thenReturn(event);
+            when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
+            when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
             eventService.cancelEvent(event.getId());
 
             assertTrue(event.isCanceled(), "Event should be canceled");
+            verify(eventRepository).save(event);
         }
     }
 
+
     @Test
-    void shouldCancelEventsIfNoMoreThan24Hours() {
+    void shouldThrowWhenCancelEventLessThan24Hours() {
         try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
             mockedStatic.when(LocalDateTime::now).thenReturn(fixedNow);
 
-            Event event = new Event("New Event", "New event", fixedNow);
+            Event event = new Event("New Event", "New event", fixedNow.plusHours(23)); // moins de 24h
+            event.setCanceled(false);
+            event.setId(1L);
 
-            when(eventRepository.getReferenceById(event.getId())).thenReturn(event);
+            when(eventRepository.findById(event.getId())).thenReturn(Optional.of(event));
 
-            IllegalStateException ex = assertThrows(IllegalStateException.class, () -> {
-                eventService.cancelEvent(event.getId());
-            });
+            assertThatThrownBy(() -> eventService.cancelEvent(event.getId()))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("You can't cancel an event less than 24 hours before it starts.");
 
-            assertEquals("Impossible d'annuler un événement à moins de 24h avant sa date.", ex.getMessage());
+            verify(eventRepository, never()).save(any());
         }
     }
 
+
     @Test
     void shouldThrowWhenCancelEventWithNullOrNonPositiveOrEventNotFound() {
+        when(eventRepository.findById(999999999999999L)).thenReturn(Optional.empty());
+
         assertThatThrownBy(() -> eventService.cancelEvent(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event ID must be positive");
@@ -518,6 +528,6 @@ public class EventServiceTest {
 
         assertThatThrownBy(() -> eventService.cancelEvent(999999999999999L))
                 .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("Event Not Found");
+                .hasMessage("Event not found with ID: 999999999999999");
     }
 }
