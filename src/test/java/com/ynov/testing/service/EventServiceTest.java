@@ -507,7 +507,7 @@ public class EventServiceTest {
     }
 
     @Test
-    void shouldThrowWhenCancelEventByIdWithNullOrNonPositive() {
+    void shouldThrowWhenCancelEventWithNullOrNonPositiveOrEventNotFound() {
         assertThatThrownBy(() -> eventService.cancelEvent(null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event ID must be positive");
@@ -515,5 +515,9 @@ public class EventServiceTest {
         assertThatThrownBy(() -> eventService.cancelEvent(0L))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event ID must be positive");
+
+        assertThatThrownBy(() -> eventService.cancelEvent(999999999999999L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event Not Found");
     }
 }
