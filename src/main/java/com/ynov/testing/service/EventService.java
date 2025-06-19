@@ -109,6 +109,18 @@ public class EventService {
             eventRepository.save(event);
         });
     }
+    public String generateTeaser(Event event) {
+        return String.format(
+                "%s vs %s – %s at %s. Players: %s vs %s",
+                event.getTeamA(),
+                event.getTeamB(),
+                event.getEventDate(),
+                event.getCity(),
+                event.getPlayersTeamA(),
+                event.getPlayersTeamB()
+        );
+    }
+
 
     // Méthode privée de validation
     private void validateEvent(Event event) {
@@ -123,6 +135,9 @@ public class EventService {
         }
         if (event.getEventDate() == null) {
             throw new IllegalArgumentException("Event date is required");
+        }
+        if (event.getTeamA() == null || event.getTeamB() == null) {
+            throw new IllegalArgumentException("Both teamA and teamB are required");
         }
     }
 }

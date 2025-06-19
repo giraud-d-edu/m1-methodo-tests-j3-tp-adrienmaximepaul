@@ -256,4 +256,52 @@ public class EventServiceTest {
             verify(eventRepository, never()).save(recentEvent);
         }
     }
+    @Test
+    void shouldThrowWhenCreatingEventWithoutTeams() {
+        Event noTeams = new Event();
+        noTeams.setName("Finale");
+        noTeams.setDescription("Grande finale");
+        noTeams.setEventDate(LocalDateTime.now().plusDays(10));
+
+        assertThatThrownBy(() -> eventService.createEvent(noTeams))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Both teamA and teamB are required");
+    }
+
+    @Test
+    void shouldCreateEventWhenTeamsAreProvided() {
+        Event withTeams = new Event();
+        withTeams.setName("Demi-finale");
+        withTeams.setDescription("Match serré");
+        withTeams.setEventDate(LocalDateTime.now().plusDays(5));
+        withTeams.setTeamA("Dragons");
+        withTeams.setTeamB("Phœnix");
+
+        when(eventRepository.existsByName(anyString())).thenReturn(false);
+        when(eventRepository.save(withTeams)).thenReturn(withTeams);
+
+        Event result = eventService.createEvent(withTeams);
+
+        assertThat(result.getTeamA()).isEqualTo("Dragons");
+        assertThat(result.getTeamB()).isEqualTo("Phœnix");
+    }
+
+    @Test
+    void shouldGenerateTeaserCorrectly() {
+        Event e = new Event();
+        e.setName("Grande Finale");
+        e.setTeamA("Dragons");
+        e.setTeamB("Phœnix");
+        e.setPlayersTeamA(List.of("Alice", "Bob"));
+        e.setPlayersTeamB(List.of("Xavier", "Yasmine"));
+        e.setEventDate(LocalDateTime.of(2025, 7, 1, 20, 0));
+        e.setCity("Paris");
+
+        String teaser = eventService.generateTeaser(e);
+
+        String expected = "Dragons vs Phœnix – 2025-07-01T20:00 at Paris. " + "Players: [Alice, Bob] vs [Xavier, Yasmine]";
+        assertThat(teaser).isEqualTo(expected);
+    }
+
+
 }
