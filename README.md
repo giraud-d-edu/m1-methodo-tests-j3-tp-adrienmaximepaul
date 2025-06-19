@@ -1,8 +1,25 @@
 # Test Unitaire TDD #
 
-### 1- Récupérer les événements du jour ###
+#### 1- Récupérer les événements du jour ####
+Nom du test: `shouldGetTodaysEvents`  
 
-### 2- Archiver les événements vieux de plus de 30 jours ###
+Dans un premier temps, `LocalDateTime` est mockée pour que la date soit fixe dans tout le test et être strictement identique à celle du service.  
+Le test vient ensuite simuler deux événements, un pour aujourd'hui et un pour demain.  
+On simule la tranche horaire de la journée en donnant la date du jour et l'heure de fin de la journée.  
+Ensuite, on simule la réponse du repository pour qu'il retourne uniquement l'événement paramétré avec une date correspondant à aujourd'hui.  
+Puis on appelle la méthode du service en donnant en paramètre le résultat simulé du répertoire et on vérifie que le résultat est bien celui attendu, c'est-à-dire l'événement d'aujourd'hui.  
+Enfin, on regarde que la taille de la liste retournée est de 1, car l'autre événement est incorrect, si la taille est de 2, le test échoue.   
+On vérifie également que la méthode du repository a bien été appelée avec les bons paramètres, c'est-à-dire le début et la fin de la journée.   
+***
+Nom de la méthode dans le service: `getTodaysEvents`  
+  
+La methode commence par récupérer le début et la fin de la journée actuelle, puis elle appelle le repository pour récupérer les événements dont la date est comprise entre ces deux bornes.
+***
+Nom de la méthode dans le repository: `findByEventDateAfterAndDateBefore`:  
+  
+La méthode du repository est appelée avec les paramètres de début et de fin de journée, et elle retourne une liste d'événements dont la date est comprise entre ces deux bornes.
+***
+#### 2- Archiver les événements vieux de plus de 30 jours ####
 
 #### Rédaction des tests ####
 
