@@ -13,6 +13,7 @@ import java.util.*;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.junit.jupiter.api.DisplayName;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -33,7 +34,7 @@ public class EventServiceTest {
     private EventService eventService;
 
     private Event sampleEvent;
-    
+
     final LocalDateTime fixedNow = LocalDateTime.of(2025, 6, 19, 10, 0);
 
     @BeforeEach
@@ -44,13 +45,6 @@ public class EventServiceTest {
         sampleEvent.setDescription("Description");
         sampleEvent.setEventDate(LocalDateTime.of(2025, 1, 1, 12, 0));
         sampleEvent.setActive(true);
-        // On étend EventService pour contrôler la date
-        eventService = new EventService(eventRepository) {
-            @Override
-            protected LocalDateTime now() {
-                return fixedNow;
-            }
-        };
     }
 
     @Test
@@ -166,7 +160,9 @@ public class EventServiceTest {
         when(eventRepository.findById(2L)).thenReturn(Optional.empty());
 
         Event data = new Event();
-        data.setName("N"); data.setDescription("D"); data.setEventDate(LocalDateTime.now());
+        data.setName("N");
+        data.setDescription("D");
+        data.setEventDate(LocalDateTime.now());
 
         assertThatThrownBy(() -> eventService.updateEvent(2L, data))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -203,7 +199,7 @@ public class EventServiceTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("Event not found with ID: 3");
     }
-    
+
     @Test
     void shouldReturnUpcomingEvents() {
         List<Event> upcoming = Arrays.asList(sampleEvent);
@@ -239,24 +235,25 @@ public class EventServiceTest {
 
     @Test
     void shouldArchiveEventsOlderThan30Days() {
-        // Given
-        Event oldEvent = new Event("Old Event", "Old event", fixedNow.minusDays(40));
-        oldEvent.setActive(true);
+        try (MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
+            mockedStatic.when(LocalDateTime::now).thenReturn(fixedNow);
 
-        Event recentEvent = new Event("Recent Event", "Still valid", fixedNow.minusDays(10));
-        recentEvent.setActive(true);
+            Event oldEvent = new Event("Old Event", "Old event", fixedNow.minusDays(40));
+            oldEvent.setActive(true);
 
-        when(eventRepository.findByEventDateBeforeAndActiveTrue(fixedNow.minusDays(30))).thenReturn(List.of(oldEvent));
-        when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
+            Event recentEvent = new Event("Recent Event", "Still valid", fixedNow.minusDays(10));
+            recentEvent.setActive(true);
 
-        // When
-        eventService.archiveOldEvents();
+            when(eventRepository.findByEventDateBeforeAndActiveTrue(fixedNow.minusDays(30))).thenReturn(List.of(oldEvent));
+            when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // Then
-        assertFalse(oldEvent.getActive(), "Old event should be archived (active = false)");
-        assertTrue(recentEvent.getActive(), "Recent event should remain active");
+            eventService.archiveOldEvents();
 
-        verify(eventRepository, times(1)).save(oldEvent);
-        verify(eventRepository, never()).save(recentEvent);
+            assertFalse(oldEvent.getActive(), "Old event should be archived (active = false)");
+            assertTrue(recentEvent.getActive(), "Recent event should remain active");
+
+            verify(eventRepository, times(1)).save(oldEvent);
+            verify(eventRepository, never()).save(recentEvent);
+        }
     }
 }
