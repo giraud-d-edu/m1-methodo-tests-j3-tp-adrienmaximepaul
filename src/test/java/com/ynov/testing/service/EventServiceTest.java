@@ -209,4 +209,15 @@ class EventServiceTest {
         assertThat(result).isEqualTo(past);
         verify(eventRepository).findByEventDateBefore(any(LocalDateTime.class));
     }
+
+    @Test
+    void shouldReturnActiveEvents() {
+        List<Event> active = Arrays.asList(sampleEvent);
+        when(eventRepository.findByActiveTrue()).thenReturn(active);
+
+        List<Event> result = eventService.getActiveEvents();
+
+        assertThat(result).isEqualTo(active);
+        verify(eventRepository).findByActiveTrue();
+    }
 }
