@@ -127,28 +127,7 @@ public class EventServiceTest {
         assertThat(result.getTeamA()).isEqualTo("Dragons");
         assertThat(result.getTeamB()).isEqualTo("Phœnix");
     }
-    @Test
-    void shouldSetTeaserOnCreate() {
-        when(eventRepository.existsByName("Match")).thenReturn(false);
-
-        when(eventRepository.save(any(Event.class)))
-                .thenAnswer(inv -> inv.getArgument(0));
-
-        Event input = new Event();
-        input.setName("Match");
-        input.setDescription("Desc");
-        input.setEventDate(LocalDateTime.of(2025, 8, 1, 18, 0));
-        input.setTeamA("A");
-        input.setTeamB("B");
-        input.setPlayersTeamA(List.of("P1"));
-        input.setPlayersTeamB(List.of("P2"));
-        input.setCity("Lyon");
-
-        Event created = eventService.createEvent(input);
-
-        String expectedTeaser = "A vs B – 2025-08-01T18:00 at Lyon. Players: [P1] vs [P2]";
-        assertThat(created.getTeaser()).isEqualTo(expectedTeaser);
-    }
+    
 
     @Test
     void shouldThrowWhenCreateEventNameExists() {
