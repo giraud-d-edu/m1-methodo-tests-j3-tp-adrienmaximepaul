@@ -126,4 +126,48 @@ class EventServiceTest {
                 .hasMessage("Event date is required");
     }
 
+    @Test
+    void shouldUpdateEventWhenExistsAndValid() {
+        Event updated = new Event();
+        updated.setName("Updated");
+        updated.setDescription("New Desc");
+        updated.setEventDate(LocalDateTime.of(2025, 2, 2, 14, 0));
+        updated.setActive(false);
+
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(sampleEvent));
+        when(eventRepository.save(any(Event.class))).thenAnswer(inv -> inv.getArgument(0));
+
+        Event result = eventService.updateEvent(1L, updated);
+
+        assertThat(result.getName()).isEqualTo("Updated");
+        assertThat(result.getDescription()).isEqualTo("New Desc");
+        assertThat(result.getEventDate()).isEqualTo(LocalDateTime.of(2025, 2, 2, 14, 0));
+        assertThat(result.getActive()).isFalse();
+    }
+
+    @Test
+    void shouldThrowWhenUpdateEventNotFound() {
+        when(eventRepository.findById(2L)).thenReturn(Optional.empty());
+
+        Event data = new Event();
+        data.setName("N"); data.setDescription("D"); data.setEventDate(LocalDateTime.now());
+
+        assertThatThrownBy(() -> eventService.updateEvent(2L, data))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event not found with ID: 2");
+    }
+
+    @Test
+    void shouldValidateUpdateEventData() {
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(sampleEvent));
+
+        Event invalid = new Event();
+        invalid.setName(" ");
+        invalid.setDescription("D");
+        invalid.setEventDate(LocalDateTime.now());
+        assertThatThrownBy(() -> eventService.updateEvent(1L, invalid))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event name is required");
+    }
+
 }
