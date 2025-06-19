@@ -35,9 +35,7 @@ public class EventServiceTest {
         Event recentEvent = new Event("Recent Event", "Still valid", now.minusDays(10));
         recentEvent.setActive(true);
 
-        List<Event> allEvents = List.of(oldEvent, recentEvent);
-
-        when(eventRepository.findAll()).thenReturn(allEvents);
+        when(eventRepository.findByEventDateBeforeAndActiveTrue(now.minusDays(30))).thenReturn(List.of(oldEvent));
         when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
