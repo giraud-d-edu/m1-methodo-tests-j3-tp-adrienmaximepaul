@@ -37,7 +37,6 @@ class EventServiceTest {
         sampleEvent.setActive(true);
     }
 
-    // getAllEvents()
     @Test
     void shouldReturnAllEvents() {
         List<Event> events = Arrays.asList(sampleEvent);
@@ -47,6 +46,35 @@ class EventServiceTest {
 
         assertThat(result).hasSize(1).contains(sampleEvent);
         verify(eventRepository).findAll();
+    }
+
+    @Test
+    void shouldReturnEventWhenIdValid() {
+        when(eventRepository.findById(1L)).thenReturn(Optional.of(sampleEvent));
+
+        Optional<Event> result = eventService.getEventById(1L);
+
+        assertThat(result).isPresent().get().isEqualTo(sampleEvent);
+    }
+
+    @Test
+    void shouldThrowWhenGetEventByIdWithNullOrNonPositive() {
+        assertThatThrownBy(() -> eventService.getEventById(null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event ID must be positive");
+
+        assertThatThrownBy(() -> eventService.getEventById(0L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Event ID must be positive");
+    }
+
+    @Test
+    void shouldReturnEmptyWhenEventNotFound() {
+        when(eventRepository.findById(2L)).thenReturn(Optional.empty());
+
+        Optional<Event> result = eventService.getEventById(2L);
+
+        assertThat(result).isEmpty();
     }
 
 }
