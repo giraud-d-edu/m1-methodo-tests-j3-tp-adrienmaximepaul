@@ -24,6 +24,10 @@ public class EventService {
         this.eventRepository = eventRepository;
     }
 
+    protected LocalDateTime now() {
+        return LocalDateTime.now();
+    }
+
     /**
      * Retrieve all events from the database
      */
@@ -85,14 +89,14 @@ public class EventService {
      * Get upcoming events (after current date)
      */
     public List<Event> getUpcomingEvents() {
-        return eventRepository.findByEventDateAfter(LocalDateTime.now());
+        return eventRepository.findByEventDateAfter(now());
     }
 
     /**
      * Get past events (before current date)
      */
     public List<Event> getPastEvents() {
-        return eventRepository.findByEventDateBefore(LocalDateTime.now());
+        return eventRepository.findByEventDateBefore(now());
     }
 
     /**
@@ -100,6 +104,14 @@ public class EventService {
      */
     public List<Event> getActiveEvents() {
         return eventRepository.findByActiveTrue();
+    }
+
+    public void archiveOldEvents() {
+        List<Event> events = eventRepository.findByEventDateBeforeAndActiveTrue(now().minusDays(30));
+        events.forEach(event -> {
+            event.setActive(false);
+            eventRepository.save(event);
+        });
     }
 
     // Méthode privée de validation
