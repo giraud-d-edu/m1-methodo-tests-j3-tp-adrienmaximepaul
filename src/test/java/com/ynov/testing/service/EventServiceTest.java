@@ -399,24 +399,36 @@ public class EventServiceTest {
 
     @Test
     void shouldReturnUpcomingEvents() {
-        List<Event> upcoming = Arrays.asList(sampleEvent);
-        when(eventRepository.findByEventDateAfter(any(LocalDateTime.class))).thenReturn(upcoming);
+        try(MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
+            mockedStatic.when(LocalDateTime::now).thenReturn(fixedNow);
 
-        List<Event> result = eventService.getUpcomingEvents();
+            Event event = sampleEvent;
+            event.setEventDate(fixedNow.plusDays(1));
+            List<Event> upcoming = Arrays.asList(event);
+            when(eventRepository.findByEventDateAfter(fixedNow)).thenReturn(upcoming);
 
-        assertThat(result).isEqualTo(upcoming);
-        verify(eventRepository).findByEventDateAfter(any(LocalDateTime.class));
+            List<Event> result = eventService.getUpcomingEvents();
+
+            assertThat(result).isEqualTo(upcoming);
+            verify(eventRepository).findByEventDateAfter(fixedNow);
+        }
     }
 
     @Test
     void shouldReturnPastEvents() {
-        List<Event> past = Arrays.asList(sampleEvent);
-        when(eventRepository.findByEventDateBefore(any(LocalDateTime.class))).thenReturn(past);
+        try(MockedStatic<LocalDateTime> mockedStatic = Mockito.mockStatic(LocalDateTime.class)) {
+            mockedStatic.when(LocalDateTime::now).thenReturn(fixedNow);
 
-        List<Event> result = eventService.getPastEvents();
+            Event event = sampleEvent;
+            event.setEventDate(fixedNow.minusDays(1));
+            List<Event> past = Arrays.asList(event);
+            when(eventRepository.findByEventDateBefore(fixedNow)).thenReturn(past);
 
-        assertThat(result).isEqualTo(past);
-        verify(eventRepository).findByEventDateBefore(any(LocalDateTime.class));
+            List<Event> result = eventService.getPastEvents();
+
+            assertThat(result).isEqualTo(past);
+            verify(eventRepository).findByEventDateBefore(fixedNow);
+        }
     }
 
     @Test
