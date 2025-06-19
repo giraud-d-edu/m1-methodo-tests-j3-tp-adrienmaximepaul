@@ -33,6 +33,8 @@ public class EventServiceTest {
     private EventService eventService;
 
     private Event sampleEvent;
+    
+    final LocalDateTime fixedNow = LocalDateTime.of(2025, 6, 19, 10, 0);
 
     @BeforeEach
     void setUp() {
@@ -42,6 +44,13 @@ public class EventServiceTest {
         sampleEvent.setDescription("Description");
         sampleEvent.setEventDate(LocalDateTime.of(2025, 1, 1, 12, 0));
         sampleEvent.setActive(true);
+        // On étend EventService pour contrôler la date
+        eventService = new EventService(eventRepository) {
+            @Override
+            protected LocalDateTime now() {
+                return fixedNow;
+            }
+        };
     }
 
     @Test
@@ -231,14 +240,13 @@ public class EventServiceTest {
     @Test
     void shouldArchiveEventsOlderThan30Days() {
         // Given
-        LocalDateTime now = LocalDateTime.now();
-        Event oldEvent = new Event("Old Event", "Old event", now.minusDays(40));
+        Event oldEvent = new Event("Old Event", "Old event", fixedNow.minusDays(40));
         oldEvent.setActive(true);
 
-        Event recentEvent = new Event("Recent Event", "Still valid", now.minusDays(10));
+        Event recentEvent = new Event("Recent Event", "Still valid", fixedNow.minusDays(10));
         recentEvent.setActive(true);
 
-        when(eventRepository.findByEventDateBeforeAndActiveTrue(now.minusDays(30))).thenReturn(List.of(oldEvent));
+        when(eventRepository.findByEventDateBeforeAndActiveTrue(fixedNow.minusDays(30))).thenReturn(List.of(oldEvent));
         when(eventRepository.save(any(Event.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         // When
