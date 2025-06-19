@@ -102,6 +102,14 @@ public class EventService {
         return eventRepository.findByActiveTrue();
     }
 
+    public void archiveOldEvents() {
+        List<Event> events = eventRepository.findByEventDateBeforeAndActiveTrue(LocalDateTime.now().minusDays(30));
+        events.forEach(event -> {
+            event.setActive(false);
+            eventRepository.save(event);
+        });
+    }
+
     // Méthode privée de validation
     private void validateEvent(Event event) {
         if (event == null) {

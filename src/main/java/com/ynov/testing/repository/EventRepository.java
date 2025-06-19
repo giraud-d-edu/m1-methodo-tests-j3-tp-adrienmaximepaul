@@ -19,5 +19,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findByActiveTrue();
     List<Event> findByEventDateAfter(LocalDateTime date);
     List<Event> findByEventDateBefore(LocalDateTime date);
+    List<Event> findByEventDateBeforeAndActiveTrue(LocalDateTime date);
     boolean existsByName(String name);
 }
