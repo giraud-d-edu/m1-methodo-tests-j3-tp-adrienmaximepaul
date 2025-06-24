@@ -1,81 +1,69 @@
 package com.ynov.testing;
 
 import org.junit.jupiter.api.DisplayName;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 public class CalculatriceTest {
-    @Test
-    @DisplayName("Should add two number")
-    public void add_1_plus_1_should_return_2() {
-        // Given
-        Calculatrice calc = new Calculatrice();
-        calc.count = 14;
+    @Nested
+    public class TestAddition {
+        @Test
+        @DisplayName("Should add two number")
+        public void add_1_plus_1_should_return_2() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+            calc.count = 14;
 
-   @Test
-   @DisplayName("Should add two number")
-   public void add_1_plus_1_should_return_2() {
-       // Given
-       Calculatrice calc = new Calculatrice();
+            // When
+            int res = calc.addition(1, 1);
 
-       // When
-       int res = calc.addition(1, 1);
+            // Then
+            assertEquals(15, calc.count);
+            assert (res == 2);
+        }
 
-        // Then
-        assertEquals(15, calc.count);
-        assert(res == 2);
-    }
-    
-    @Test
-    @DisplayName("Should return erreur if number < 0")
-    public void add_moins_1_plus_1_should_return_erreur() {
-        // Given
-        Calculatrice calc = new Calculatrice();
-        calc.count = 14;
-        // Then
-        assertThatThrownBy(() -> calc.addition(-1, 1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Addition parameters must be positive");
-        assertEquals(14, calc.count);
-    }
+        @Test
+        @DisplayName("Should return erreur if number < 0")
+        public void add_moins_1_plus_1_should_return_erreur() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+            calc.count = 14;
+            // Then
+            assertThatThrownBy(() -> calc.addition(-1, 1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Addition parameters must be positive");
+            assertEquals(14, calc.count);
+        }
 
-    @Test
-    @DisplayName("Should return erreur count > 100")
-    public void maximum_100_operation_should_return_erreur() {
-        // Given
-        Calculatrice calc = new Calculatrice();
-        calc.count = 100;
+        @Test
+        @DisplayName("Should return erreur count > 100")
+        public void maximum_100_operation_should_return_erreur() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+            calc.count = 100;
 
-        // Then
-        assertThatThrownBy(() -> calc.addition(1, 1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Reach the limit of 100 iteration");
-        assertEquals(100, calc.count);
-    }
+            // Then
+            assertThatThrownBy(() -> calc.addition(1, 1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Reach the limit of 100 iteration");
+            assertEquals(100, calc.count);
+        }
 
-    @Test
-    @DisplayName("Should return erreur if count = 100")
-    public void maximum_100_operation_should_return_ok() {
-        // Given
-        Calculatrice calc = new Calculatrice();
+        @Test
+        @DisplayName("Should return erreur if count = 100")
+        public void maximum_100_operation_should_return_ok() {
+            // Given
+            Calculatrice calc = new Calculatrice();
 
-        // When
-        calc.count = 99;
-        int result = calc.addition(1, 1);
-        // Then
-        assertEquals(100, calc.count);
-        assert(result == 2);
+            // When
+            calc.count = 99;
+            int result = calc.addition(1, 1);
+            // Then
+            assertEquals(100, calc.count);
+            assert (result == 2);
+        }
     }
 
-
-
-
-
-
-
-    
 
     // ================== RÈGLES MÉTIER PROGRESSIVES ==================
 
@@ -110,6 +98,7 @@ public class CalculatriceTest {
             float res = calculatrice.multiplication(4f, 3f);
 
             assertEquals(res, 12f);
+            assertEquals(calculatrice.count, 1);
         }
 
         @Test
@@ -124,6 +113,8 @@ public class CalculatriceTest {
             assertThatThrownBy(() -> calculatrice.multiplication(3f, -10f))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("You can't multiply by negative number");
+
+            assertEquals(calculatrice.count, 0);
         }
 
         @Test
@@ -138,6 +129,8 @@ public class CalculatriceTest {
             assertThatThrownBy(() -> calculatrice.multiplication(3f, 0f))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("You can't multiply by 0");
+
+            assertEquals(calculatrice.count, 0);
         }
 
         @Test
@@ -148,6 +141,35 @@ public class CalculatriceTest {
             assertThatThrownBy(() -> calculatrice.multiplication(1001f, 1f))
                     .isInstanceOf(ArithmeticException.class)
                     .hasMessage("Result need to be less than 1000");
+
+            assertEquals(calculatrice.count, 0);
+        }
+
+
+        @Test
+        @DisplayName("Should return erreur count > 100")
+        public void maximum_100_operation_should_return_erreur() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+            calc.count = 100;
+
+            // Then
+            assertThatThrownBy(() -> calc.multiplication(1f, 1f)).isInstanceOf(IllegalArgumentException.class).hasMessage("Reach the limit of 100 iteration");
+            assertEquals(100, calc.count);
+        }
+
+        @Test
+        @DisplayName("Should return erreur if count = 100")
+        public void maximum_100_operation_should_return_ok() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+
+            // When
+            calc.count = 99;
+            float result = calc.multiplication(1f, 1f);
+            // Then
+            assertEquals(100, calc.count);
+            assert (result == 1);
         }
     }
 
