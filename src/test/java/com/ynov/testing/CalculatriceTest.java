@@ -18,6 +18,8 @@ public class CalculatriceTest {
         assert(res == 2);
     }
 
+    
+
     // Etape 0 : Implémenter la méthode vide addition() dans Calculatrice
     // RED - Le test doit échouer car la méthode n'existe pas
     // Etape 1 : Implémenter la méthode addition() pour que le test passe
