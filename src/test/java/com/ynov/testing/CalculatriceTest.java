@@ -173,21 +173,84 @@ public class CalculatriceTest {
         }
     }
 
-    // Nouvelle méthode : DIVISION
-    // Etape 16 : Écrire un test pour la division de base (ex: 10.0 / 2.0 = 5.0)
-    // RED - Méthode division() inexistante
-    // Etape 17 : Implémenter division() basique avec des doubles
-    // GREEN - return a / b;
 
-    // Règle classique : interdiction de diviser par zéro
-    // Etape 18 : Écrire un test vérifiant qu'une ArithmeticException est levée pour division par 0
-    // RED - Aucune vérification de division par zéro
-    // Etape 19 : Ajouter la vérification de division par zéro
-    // GREEN - if (b == 0.0) throw new ArithmeticException(...)
 
-    // Nouvelle règle pour division : les résultats doivent être arrondis à 2 décimales
-    // Etape 20 : Écrire un test avec une division donnant plusieurs décimales (ex: 10/3)
-    // RED - Aucun arrondi n'est appliqué
-    // Etape 21 : Implémenter l'arrondi à 2 décimales dans division()
-    // GREEN - Utiliser Math.round() ou BigDecimal pour l'arrondi
+    @Nested
+    public class TestDivition{
+        @Test
+        @DisplayName("Should divide two numbers")
+        public void divide_10_by_2_should_return_5() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+
+            // When
+            double res = calc.division(10.0, 2.0);
+
+            // Then
+            assert(res == 5.0);
+        }
+
+        @Test
+        @DisplayName("Should not divide by zero")
+        public void divide_by_zero_should_throw_exception() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+
+            // When / Then
+            assertThatThrownBy(() -> calc.division(10.0, 0.0))
+                    .isInstanceOf(ArithmeticException.class)
+                    .hasMessage("Division by zero is not allowed");
+        }
+
+        @Test
+        @DisplayName("Should not divide negative numbers")
+        public void divide_negative_numbers_should_throw_exception() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+
+            // When / Then
+            assertThatThrownBy(() -> calc.division(-10.0, 2.0))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Negative numbers are not allowed");
+        }
+
+        @Test
+        @DisplayName("result of division should be rounded to 2 decimal places")
+        public void divide_10_by_3_should_return_3_33() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+
+            // When
+            double res = calc.division(10.0, 3.0);
+
+            // Then
+            assert(res == 3.33);
+        }
+        @Test
+        @DisplayName("Should return erreur count > 100")
+        public void maximum_100_operation_should_return_erreur() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+            calc.count = 100;
+
+            // Then
+            assertThatThrownBy(() -> calc.division(10, 2)).isInstanceOf(IllegalArgumentException.class).hasMessage("Reach the limit of 100 iteration");
+            assertEquals(100, calc.count);
+        }
+
+        @Test
+        @DisplayName("Should return erreur if count = 100")
+        public void maximum_100_operation_should_return_ok() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+
+            // When
+            calc.count = 99;
+            double result = calc.division(10.0, 2.0);
+            // Then
+            assertEquals(100, calc.count);
+            assert (result == 5);
+        }
+    }
+
 }

@@ -1,6 +1,9 @@
 package com.ynov.testing;
 
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 public class Calculatrice {
     int count = 0;
 
@@ -23,7 +26,20 @@ public class Calculatrice {
         counterCheck();
         return res;
     }
-
+    public double division(double a, double b) {
+    if (a == 0.0 || b == 0) {
+        throw new ArithmeticException("Division by zero is not allowed");
+    }
+    else if (a < 0 || b < 0) {
+        throw new IllegalArgumentException("Negative numbers are not allowed");
+    }
+    double result = a / b;
+    if (result > 1000) {
+        throw new ArithmeticException("Result need to be less than 1000");
+    }
+        counterCheck();
+        return BigDecimal.valueOf(result).setScale(2, RoundingMode.HALF_UP).doubleValue();
+    }
     private void counterCheck() {
         if (count >= 100) {
             throw new IllegalArgumentException("Reach the limit of 100 iteration");
