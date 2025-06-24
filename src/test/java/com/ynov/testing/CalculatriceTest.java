@@ -64,14 +64,63 @@ public class CalculatriceTest {
         }
     }
 
+    @Nested
+    public class TestSoustraction {
+        @Test
+        @DisplayName("Should soustract two number")
+        public void soustraction_5_moins_3_should_return_2() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+            calc.count = 14;
 
-    // ================== RÈGLES MÉTIER PROGRESSIVES ==================
+            // When
+            int res = calc.soustraction(5, 3);
 
-    // Nouvelle règle : la calculatrice ne peut effectuer qu'un maximum de 100 opérations
-    // Etape 4 : Implémenter un test ou plusieurs tests pour cette nouvelle règle
-    // RED - Écrire un test qui effectue 100 opérations puis vérifie qu'une exception est levée à la 101ème
-    // Etape 5 : Implémenter le code source pour que le(s) test(s) passe(nt)
-    // GREEN - Ajouter un compteur d'opérations et la vérification de limite
+            // Then
+            assertEquals(15, calc.count);
+            assert (res == 2);
+        }
+
+        @Test
+        @DisplayName("Should have negative result")
+        public void soustraction_3_moins_5_should_return_error() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+            calc.count = 14;
+
+            // Then
+            assertEquals(14, calc.count);
+            assertThatThrownBy(() -> calc.soustraction(3, 5)).isInstanceOf(IllegalArgumentException.class).hasMessage("Result can not be negatif");
+
+        }
+
+        @Test
+        @DisplayName("Should return erreur count > 100")
+        public void maximum_100_operation_should_return_erreur() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+            calc.count = 100;
+
+            // Then
+            assertThatThrownBy(() -> calc.soustraction(1, 1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Reach the limit of 100 iteration");
+            assertEquals(100, calc.count);
+        }
+
+        @Test
+        @DisplayName("Should return erreur if count = 100")
+        public void maximum_100_operation_should_return_ok() {
+            // Given
+            Calculatrice calc = new Calculatrice();
+
+            // When
+            calc.count = 99;
+            int result = calc.soustraction(2, 1);
+            // Then
+            assertEquals(100, calc.count);
+            assert (result == 1);
+        }
+    }
+
 
     // ================== NOUVELLES MÉTHODES ==================
 
