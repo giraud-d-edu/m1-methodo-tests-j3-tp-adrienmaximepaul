@@ -1,20 +1,34 @@
-package com.ynov.testing.service;
+package com.ynov.testing;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@service
-public class CalculatriceService {
+public class Calculatrice {
+    int count = 0;
 
-    
-    private final CalculatriceRepository calculatriceRepository;
-
-    @Autowired
-    public CalculatriceService(CalculatriceRepository calculatriceRepository) {
-        this.calculatriceRepository = calculatriceRepository;
+    public int addition(int a, int b) {
+        if (a < 0 || b < 0) {
+            throw new IllegalArgumentException("Addition parameters must be positive");
+        }
+        counterCheck();
+        return a + b;
     }
 
+    public float multiplication(float a, float b) {
+        if (a == 0 || b == 0) throw new IllegalArgumentException("You can't multiply by 0");
+        if (a < 0 || b < 0) throw new IllegalArgumentException("You can't multiply by negative number");
+
+        float res = a * b;
+
+        if (res > 1000) throw new ArithmeticException("Result need to be less than 1000");
+
+        counterCheck();
+        return res;
+    }
+
+    private void counterCheck() {
+        if (count >= 100) {
+            throw new IllegalArgumentException("Reach the limit of 100 iteration");
+        }
+        ;
+        count += 1;
+    }
 }
