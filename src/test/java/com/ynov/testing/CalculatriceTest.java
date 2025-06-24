@@ -35,6 +35,9 @@ public class CalculatriceTest {
             // Then
             assertThatThrownBy(() -> calc.addition(-1, 1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Addition parameters must be positive");
             assertEquals(14, calc.count);
+
+            assertThatThrownBy(() -> calc.addition(1, -1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Addition parameters must be positive");
+            assertEquals(14, calc.count);
         }
 
         @Test
@@ -249,6 +252,10 @@ public class CalculatriceTest {
             assertThatThrownBy(() -> calc.division(10.0, 0.0))
                     .isInstanceOf(ArithmeticException.class)
                     .hasMessage("Division by zero is not allowed");
+
+            assertThatThrownBy(() -> calc.division(0.0, 10.0))
+                    .isInstanceOf(ArithmeticException.class)
+                    .hasMessage("Division by zero is not allowed");
         }
 
         @Test
@@ -259,6 +266,10 @@ public class CalculatriceTest {
 
             // When / Then
             assertThatThrownBy(() -> calc.division(-10.0, 2.0))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("Negative numbers are not allowed");
+
+            assertThatThrownBy(() -> calc.division(10.0, -2.0))
                     .isInstanceOf(IllegalArgumentException.class)
                     .hasMessage("Negative numbers are not allowed");
         }
