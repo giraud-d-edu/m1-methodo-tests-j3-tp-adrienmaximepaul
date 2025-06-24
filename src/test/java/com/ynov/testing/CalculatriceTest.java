@@ -1,14 +1,16 @@
 package com.ynov.testing;
 
-import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
-import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
+import org.junit.jupiter.api.Nested;
+import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class CalculatriceTest {
-
     @Test
     @DisplayName("Should add two number")
     public void add_1_plus_1_should_return_2() {
@@ -16,8 +18,14 @@ public class CalculatriceTest {
         Calculatrice calc = new Calculatrice();
         calc.count = 14;
 
-        // When
-        int res = calc.addition(1, 1);
+   @Test
+   @DisplayName("Should add two number")
+   public void add_1_plus_1_should_return_2() {
+       // Given
+       Calculatrice calc = new Calculatrice();
+
+       // When
+       int res = calc.addition(1, 1);
 
         // Then
         assertEquals(15, calc.count);
@@ -91,23 +99,57 @@ public class CalculatriceTest {
     // Etape 9 : Modifier soustraction() pour lever une exception si résultat négatif
     // GREEN - Vérifier le résultat avant de le retourner
 
-    // Nouvelle méthode : MULTIPLICATION
-    // Etape 10 : Écrire un test pour la multiplication de base (ex: 4 * 3 = 12)
-    // RED - Méthode multiplication() inexistante
-    // Etape 11 : Implémenter multiplication() basique
-    // GREEN - return a * b;
+    @Nested
+    public class TestMultiplication {
 
-    // Nouvelle règle pour multiplication : interdiction de multiplier par 0
-    // Etape 12 : Écrire un test vérifiant qu'une exception est levée lors de multiplication par 0
-    // RED - Aucune vérification du zéro
-    // Etape 13 : Ajouter la vérification pour interdire la multiplication par 0
-    // GREEN - Vérifier si a == 0 || b == 0 et lever exception
+        @Test
+        @DisplayName("should mult 4 and 3")
+        public void test_mult_4_and_3() {
+            Calculatrice calculatrice = new Calculatrice();
 
-    // Nouvelle règle pour multiplication : le résultat ne peut pas dépasser 1000
-    // Etape 14 : Écrire un test avec des nombres dont le produit > 1000
-    // RED - Aucune vérification de limite
-    // Etape 15 : Ajouter la vérification de limite dans multiplication()
-    // GREEN - Vérifier le résultat avant de le retourner
+            float res = calculatrice.multiplication(4f, 3f);
+
+            assertEquals(res, 12f);
+        }
+
+        @Test
+        @DisplayName("should not multi by negative number")
+        public void test_mult_negative_number() {
+            Calculatrice calculatrice = new Calculatrice();
+
+            assertThatThrownBy(() -> calculatrice.multiplication(-10f, 3f))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("You can't multiply by negative number");
+
+            assertThatThrownBy(() -> calculatrice.multiplication(3f, -10f))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("You can't multiply by negative number");
+        }
+
+        @Test
+        @DisplayName("should not multi by 0")
+        public void test_mult_0() {
+            Calculatrice calculatrice = new Calculatrice();
+
+            assertThatThrownBy(() -> calculatrice.multiplication(0f, 3f))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("You can't multiply by 0");
+
+            assertThatThrownBy(() -> calculatrice.multiplication(3f, 0f))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("You can't multiply by 0");
+        }
+
+        @Test
+        @DisplayName("shound result to be less than 1000")
+        public void test_shound_result_to_be_less_than_1000() {
+            Calculatrice calculatrice = new Calculatrice();
+
+            assertThatThrownBy(() -> calculatrice.multiplication(1001f, 1f))
+                    .isInstanceOf(ArithmeticException.class)
+                    .hasMessage("Result need to be less than 1000");
+        }
+    }
 
     // Nouvelle méthode : DIVISION
     // Etape 16 : Écrire un test pour la division de base (ex: 10.0 / 2.0 = 5.0)

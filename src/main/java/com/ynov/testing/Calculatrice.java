@@ -16,4 +16,14 @@ public class Calculatrice {
         return a + b;
     }
 
+    public float multiplication(float a, float b) {
+        if ( a == 0 || b == 0) throw new IllegalArgumentException("You can't multiply by 0");
+        if ( a < 0 || b < 0) throw new IllegalArgumentException("You can't multiply by negative number");
+
+        float res = a * b;
+
+        if (res > 1000) throw new ArithmeticException("Result need to be less than 1000");
+
+        return res;
+    }
 }
