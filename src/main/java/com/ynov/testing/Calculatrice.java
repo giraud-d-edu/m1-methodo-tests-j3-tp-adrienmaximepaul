@@ -1,20 +1,19 @@
-package com.ynov.testing.service;
+package com.ynov.testing;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
-@service
-public class CalculatriceService {
+public class Calculatrice {
 
-    
-    private final CalculatriceRepository calculatriceRepository;
+    int count = 0; 
 
-    @Autowired
-    public CalculatriceService(CalculatriceRepository calculatriceRepository) {
-        this.calculatriceRepository = calculatriceRepository;
+    public int addition(int a, int b){
+        if(count >= 100) {
+            throw new IllegalArgumentException("Reach the limit of 100 iteration");
+        };
+        if(a < 0 || b < 0){
+            throw new IllegalArgumentException("Addition parameters must be positive");
+        };
+        count += 1;
+        return a + b;
     }
 
 }

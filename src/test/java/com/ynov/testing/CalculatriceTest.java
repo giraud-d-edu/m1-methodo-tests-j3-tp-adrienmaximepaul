@@ -2,6 +2,10 @@ package com.ynov.testing;
 
 import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
+import static org.assertj.core.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 
 public class CalculatriceTest {
 
@@ -10,28 +14,62 @@ public class CalculatriceTest {
     public void add_1_plus_1_should_return_2() {
         // Given
         Calculatrice calc = new Calculatrice();
+        calc.count = 14;
 
         // When
         int res = calc.addition(1, 1);
 
         // Then
+        assertEquals(15, calc.count);
         assert(res == 2);
     }
+    
+    @Test
+    @DisplayName("Should return erreur if number < 0")
+    public void add_moins_1_plus_1_should_return_erreur() {
+        // Given
+        Calculatrice calc = new Calculatrice();
+        calc.count = 14;
+        // Then
+        assertThatThrownBy(() -> calc.addition(-1, 1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Addition parameters must be positive");
+        assertEquals(14, calc.count);
+    }
+
+    @Test
+    @DisplayName("Should return erreur count > 100")
+    public void maximum_100_operation_should_return_erreur() {
+        // Given
+        Calculatrice calc = new Calculatrice();
+        calc.count = 100;
+
+        // Then
+        assertThatThrownBy(() -> calc.addition(1, 1)).isInstanceOf(IllegalArgumentException.class).hasMessage("Reach the limit of 100 iteration");
+        assertEquals(100, calc.count);
+    }
+
+    @Test
+    @DisplayName("Should return erreur if count = 100")
+    public void maximum_100_operation_should_return_ok() {
+        // Given
+        Calculatrice calc = new Calculatrice();
+
+        // When
+        calc.count = 99;
+        int result = calc.addition(1, 1);
+        // Then
+        assertEquals(100, calc.count);
+        assert(result == 2);
+    }
+
+
+
+
+
+
 
     
 
-    // Etape 0 : Implémenter la méthode vide addition() dans Calculatrice
-    // RED - Le test doit échouer car la méthode n'existe pas
-    // Etape 1 : Implémenter la méthode addition() pour que le test passe
-    // GREEN - Implémentation minimale : return a + b;
-
     // ================== RÈGLES MÉTIER PROGRESSIVES ==================
-
-    // Nouvelle règle : les nombres négatifs sont interdits dans cette calculatrice
-    // Etape 2 : Implémenter un test ou plusieurs tests pour cette nouvelle règle
-    // RED - Écrire un test qui vérifie qu'une exception est levée avec des nombres négatifs
-    // Etape 3 : Implémenter le code source pour que le(s) test(s) passe(nt)
-    // GREEN - Ajouter la vérification et lever IllegalArgumentException
 
     // Nouvelle règle : la calculatrice ne peut effectuer qu'un maximum de 100 opérations
     // Etape 4 : Implémenter un test ou plusieurs tests pour cette nouvelle règle
